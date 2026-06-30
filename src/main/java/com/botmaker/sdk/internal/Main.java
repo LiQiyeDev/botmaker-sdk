@@ -1,16 +1,15 @@
 package com.botmaker.sdk.internal;
 
 import com.botmaker.sdk.internal.capture.ImageDisplay;
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.opencv.opencv_java;
+import com.botmaker.sdk.internal.opencv.OpenCvNative;
 
 import static com.botmaker.sdk.internal.capture.CaptureTest.testLiveCapture;
 
 
 public class Main {
 
-    static{
-        Loader.load(opencv_java.class);
+    static {
+        OpenCvNative.ensureLoaded();
     }
 
     public static void main(String[] args) {

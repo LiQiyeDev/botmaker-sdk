@@ -5,10 +5,9 @@ import com.botmaker.sdk.api.Rect;
 import com.botmaker.sdk.api.capture.Screen;
 import com.botmaker.sdk.api.interaction.Mouse;
 import com.botmaker.sdk.api.interaction.Wait;
-import com.botmaker.sdk.internal.opencv.InternalMatch;
-import com.botmaker.sdk.internal.opencv.MatType;
 import com.botmaker.sdk.internal.opencv.OpencvManager;
-import com.botmaker.sdk.internal.opencv.Template;
+import com.botmaker.sdk.internal.opencv.RawMatch;
+import org.opencv.core.Mat;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -35,23 +34,16 @@ public class ImageState {
             return visibleIds;
         }
 
-        Template background = new Template(
-                OpencvManager.bufferedImageToMat(screenshot),
-                "background"
-        );
-
-        for (ImageTemplate template : templates) {
-            InternalMatch result =
-                    OpencvManager.findBestMatch(
-                            template.getInternalTemplate(),
-                            background,
-                            MatType.COLOR,
-                            confidence
-                    );
-
-            if (result != null && result.isMatch()) {
-                visibleIds.add(template.getId());
+        Mat background = OpencvManager.bufferedImageToMat(screenshot);
+        try {
+            for (ImageTemplate template : templates) {
+                RawMatch result = OpencvManager.findBestMatch(template.getMat(), background, false, confidence);
+                if (result != null) {
+                    visibleIds.add(template.getId());
+                }
             }
+        } finally {
+            background.release();
         }
 
         return visibleIds;
@@ -115,37 +107,31 @@ public class ImageState {
             return results;
         }
 
-        Template background = new Template(
-                OpencvManager.bufferedImageToMat(screenshot),
-                "background"
-        );
+        Mat background = OpencvManager.bufferedImageToMat(screenshot);
 
         int offsetX = region != null ? region.x : 0;
         int offsetY = region != null ? region.y : 0;
 
-        for (ImageTemplate template : templates) {
-            InternalMatch internalResult =
-                    OpencvManager.findBestMatch(
-                            template.getInternalTemplate(),
-                            background,
-                            MatType.COLOR,
-                            confidence
+        try {
+            for (ImageTemplate template : templates) {
+                RawMatch match = OpencvManager.findBestMatch(template.getMat(), background, false, confidence);
+
+                if (match != null) {
+                    Point location = new Point(match.x() + offsetX, match.y() + offsetY);
+
+                    MatchResult result = new MatchResult(
+                            location,
+                            match.width(),
+                            match.height(),
+                            match.score(),
+                            template.getId()
                     );
 
-            if (internalResult != null && internalResult.isMatch()) {
-                org.opencv.core.Rect rect = internalResult.rectLocation;
-                Point location = new Point(rect.x + offsetX, rect.y + offsetY);
-
-                MatchResult result = new MatchResult(
-                        location,
-                        rect.width,
-                        rect.height,
-                        internalResult.getScore(),
-                        template.getId()
-                );
-
-                results.put(template.getId(), result);
+                    results.put(template.getId(), result);
+                }
             }
+        } finally {
+            background.release();
         }
 
         return results;

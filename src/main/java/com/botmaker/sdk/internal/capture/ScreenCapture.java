@@ -2,43 +2,19 @@ package com.botmaker.sdk.internal.capture;
 
 import com.sun.jna.platform.win32.WinDef.*;
 import com.sun.jna.platform.win32.WinGDI;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 
 
+/**
+ * Central screen-capture facade. Per-window capture (Windows GDI / Robot) lives here; full-desktop
+ * capture is delegated to a {@link CaptureBackend} selected for the current platform (Robot on
+ * X11/Windows, Spectacle on KDE Wayland). This is the single entry point — both
+ * {@link com.botmaker.sdk.api.capture.Screen} and the {@code NativeController}s route through it.
+ */
 public class ScreenCapture {
-
-
-	static Mat bufferedImageToMat(BufferedImage bi) {
-
-		BufferedImage convertedImg = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-
-		convertedImg.getGraphics().drawImage(bi, 0, 0, null);
-
-		Mat mat = new Mat(convertedImg.getHeight(), convertedImg.getWidth(), CvType.CV_8UC3);
-		byte[] data = ((DataBufferByte) convertedImg.getRaster().getDataBuffer()).getData();
-		mat.put(0, 0, data);
-		return mat;
-	}
-
-	static BufferedImage matToBufferedImage(Mat mat) {
-		int type = BufferedImage.TYPE_BYTE_GRAY;
-		if (mat.channels() > 1) {
-			type = BufferedImage.TYPE_3BYTE_BGR;
-		}
-		int bufferSize = mat.channels() * mat.cols() * mat.rows();
-		byte[] b = new byte[bufferSize];
-		mat.get(0, 0, b);
-		BufferedImage image = new BufferedImage(mat.cols(), mat.rows(), type);
-		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-		System.arraycopy(b, 0, targetPixels, 0, b.length);
-		return image;
-	}
 
 	public static BufferedImage capture(HWND hWnd) {
 		// Get screen dimensions for fullscreen check
@@ -146,20 +122,14 @@ public class ScreenCapture {
 	 * This captures the virtual screen bounds that encompasses all monitors
 	 */
 	public static BufferedImage captureDesktop() {
-		try {
-			// Get the bounding rectangle of all monitors
-			Rectangle virtualBounds = getVirtualScreenBounds();
-			return new Robot().createScreenCapture(virtualBounds);
-		} catch (AWTException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return CaptureBackend.select().captureDesktop();
 	}
 
 	/**
-	 * Get the virtual screen bounds that encompasses all monitors
+	 * Get the virtual screen bounds that encompasses all monitors.
+	 * Single source of truth for multi-monitor bounds, shared by the capture backends.
 	 */
-	private static Rectangle getVirtualScreenBounds() {
+	static Rectangle getVirtualScreenBounds() {
 		Rectangle virtualBounds = new Rectangle();
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();

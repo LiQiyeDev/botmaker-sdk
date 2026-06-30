@@ -1,5 +1,6 @@
 package com.botmaker.sdk.internal.capture.linux;
 
+import com.botmaker.sdk.internal.capture.ScreenCapture;
 import com.botmaker.sdk.internal.capture.core.GenericWindow;
 import com.botmaker.sdk.internal.capture.core.NativeController;
 import com.sun.jna.Pointer;
@@ -267,33 +268,8 @@ public class LinuxController implements NativeController, AutoCloseable {
 	 */
 	@Override
 	public BufferedImage captureDesktop() {
-		try {
-			// Get the bounding rectangle of all monitors
-			Rectangle virtualBounds = getVirtualScreenBounds();
-			return new Robot().createScreenCapture(virtualBounds);
-		} catch (AWTException e) {
-			System.err.println("[Linux] Desktop capture failed: " + e.getMessage());
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * Get the virtual screen bounds that encompasses all monitors
-	 */
-	private Rectangle getVirtualScreenBounds() {
-		Rectangle virtualBounds = new Rectangle();
-
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice[] screens = ge.getScreenDevices();
-
-		for (GraphicsDevice screen : screens) {
-			GraphicsConfiguration config = screen.getDefaultConfiguration();
-			Rectangle bounds = config.getBounds();
-			virtualBounds = virtualBounds.union(bounds);
-		}
-
-		return virtualBounds;
+		// Delegate to the central facade so X11/Wayland (Spectacle) handling lives in one place.
+		return ScreenCapture.captureDesktop();
 	}
 
 	/**

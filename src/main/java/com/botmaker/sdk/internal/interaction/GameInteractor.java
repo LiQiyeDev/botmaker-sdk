@@ -5,10 +5,9 @@ import com.botmaker.sdk.internal.capture.Clicker;
 import com.botmaker.sdk.internal.capture.ScreenCapture;
 import com.botmaker.sdk.internal.capture.WindowInfo;
 import com.botmaker.sdk.internal.emulator.Emulator;
-import com.botmaker.sdk.internal.opencv.InternalMatch;
-import com.botmaker.sdk.internal.opencv.MatType;
 import com.botmaker.sdk.internal.opencv.OpencvManager;
-import com.botmaker.sdk.internal.opencv.Template;
+import com.botmaker.sdk.internal.opencv.RawMatch;
+import org.opencv.core.Mat;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -28,7 +27,7 @@ public class GameInteractor{
         this.gameWindow = gameWindow;
     }
 
-    public Template getBackground() {
+    public Mat getBackground() {
         try {
             BufferedImage screenshot = null;
             if (gameType == GameType.EMULATOR && emulator != null) {
@@ -44,7 +43,7 @@ public class GameInteractor{
             }
 
             if (screenshot != null) {
-                return new Template(OpencvManager.bufferedImageToMat(screenshot), "screenshot");
+                return OpencvManager.bufferedImageToMat(screenshot);
             }
             return null;
         } catch (Exception e) {
@@ -55,12 +54,16 @@ public class GameInteractor{
     }
 
 
-    public InternalMatch findTemplateInGame(Template template, MatType matType, double confidenceThreshold) throws Exception {
-        Template background = getBackground();
+    public RawMatch findTemplateInGame(Mat template, boolean grayscale, double confidenceThreshold) throws Exception {
+        Mat background = getBackground();
         if (background != null) {
-            return OpencvManager.findBestMatch(template, background, matType, confidenceThreshold);
+            try {
+                return OpencvManager.findBestMatch(template, background, grayscale, confidenceThreshold);
+            } finally {
+                background.release();
+            }
         }
-        return InternalMatch.noMatch();
+        return null;
     }
 
 

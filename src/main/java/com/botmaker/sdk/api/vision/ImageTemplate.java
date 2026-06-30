@@ -1,22 +1,32 @@
 package com.botmaker.sdk.api.vision;
 
-import com.botmaker.sdk.internal.opencv.Template;
+import com.botmaker.sdk.internal.opencv.OpenCvNative;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
+
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Public API class for Image Templates.
- * It holds the configuration (Path, Threshold, ID) and lazily manages the internal OpenCV wrapper.
+ * Public handle for a template image used by the vision API.
+ *
+ * <p>It holds the configuration (file path, derived id, match threshold) and lazily owns the
+ * underlying OpenCV {@link Mat}. The {@code Mat} is loaded from disk on first use and released by
+ * {@link #unload()} / {@link #close()}. (This class previously delegated to an internal
+ * {@code Template} wrapper; that indirection has been collapsed now that OpenCV loads reliably via
+ * {@link OpenCvNative}.)
  */
-public class ImageTemplate {
+public class ImageTemplate implements AutoCloseable {
+
+    static { OpenCvNative.ensureLoaded(); }
 
     private final String filePath;
     private final String id;
     private double threshold = 0.8; // Default confidence
 
-    // The internal wrapper that holds the actual OpenCV Mat.
-    // We do NOT import org.opencv.core.Mat here to keep the API clean.
-    private Template internalTemplate;
+    // Lazily-loaded OpenCV image data. Null until getMat() is first called.
+    private Mat mat;
 
     /**
      * Constructor using file path.
@@ -28,8 +38,7 @@ public class ImageTemplate {
         }
         this.filePath = filePath;
 
-        // Extract ID from filename using java.nio.file.Path
-        // e.g. "images/btn_ok.png" -> "btn_ok"
+        // Extract ID from filename: "images/btn_ok.png" -> "btn_ok"
         Path path = Paths.get(filePath);
         String fileName = path.getFileName().toString();
         int dotIndex = fileName.lastIndexOf('.');
@@ -44,10 +53,6 @@ public class ImageTemplate {
         this.threshold = threshold;
     }
 
-    /**
-     * Returns the ID derived from the filename.
-     * Used by ImageState and logging.
-     */
     public String getId() {
         return id;
     }
@@ -65,27 +70,43 @@ public class ImageTemplate {
     }
 
     /**
-     * Retrieves the internal Template object.
-     * Loads the image from disk into memory if strictly necessary.
+     * Returns the OpenCV image data, loading it from disk on first access.
+     * The returned {@link Mat} is owned by this template — do not release it directly; use
+     * {@link #unload()} instead.
      */
-    public Template getInternalTemplate() {
-        // Lazy loading: Only load the heavy OpenCV object when actually needed by ImageFinder
-        if (internalTemplate == null || internalTemplate.empty()) {
-            // This uses the internal Template(String path) constructor
-            this.internalTemplate = new Template(filePath);
+    public Mat getMat() {
+        if (mat == null || mat.empty()) {
+            String absPath = new File(filePath).getAbsolutePath();
+            mat = Imgcodecs.imread(absPath);
+            if (mat.empty()) {
+                throw new RuntimeException("Failed to load image template. Path: " + absPath);
+            }
         }
-        return internalTemplate;
+        return mat;
+    }
+
+    public int width() {
+        return getMat().cols();
+    }
+
+    public int height() {
+        return getMat().rows();
     }
 
     /**
-     * Explicitly releases the internal image memory.
-     * Useful if you want to unload a specific template.
+     * Releases the underlying image memory. Safe to call repeatedly; the Mat is reloaded on the
+     * next {@link #getMat()}.
      */
     public void unload() {
-        if (internalTemplate != null) {
-            internalTemplate.close();
-            internalTemplate = null;
+        if (mat != null) {
+            mat.release();
+            mat = null;
         }
+    }
+
+    @Override
+    public void close() {
+        unload();
     }
 
     @Override

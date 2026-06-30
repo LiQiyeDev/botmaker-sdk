@@ -3,9 +3,6 @@ package com.botmaker.sdk.internal.capture;
 import com.botmaker.sdk.internal.capture.core.GenericWindow;
 import com.botmaker.sdk.internal.capture.core.NativeController;
 import com.botmaker.sdk.internal.capture.core.NativeControllerFactory;
-import com.botmaker.sdk.internal.opencv.*;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,11 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
-
-// Make sure these utility methods are accessible or moved to a shared utility class
-import static com.botmaker.sdk.internal.capture.ScreenCapture.matToBufferedImage;
-
-import static com.botmaker.sdk.internal.opencv.OpencvManager.bufferedImageToMat;
 
 public class CaptureTest {
 
@@ -67,47 +59,6 @@ public class CaptureTest {
 				display.showImage(screenshot);
 				Thread.sleep(100); // Capture roughly 10 times per second
 			}
-		}
-	}
-
-	public static void testCreateTemplateAndFind() throws IOException, InterruptedException {
-		System.out.println("Press ENTER in the console to capture the first corner of the rectangle.");
-		waitForKeyPress();
-		Point p1 = getMousePosition();
-		System.out.println("First corner captured at: " + p1);
-
-		System.out.println("Press ENTER again to capture the second corner.");
-		waitForKeyPress();
-		Point p2 = getMousePosition();
-		System.out.println("Second corner captured at: " + p2);
-
-		Rectangle rect = new Rectangle(p1);
-		rect.add(p2);
-
-		BufferedImage desktop = osController.captureDesktop();
-		if (desktop == null) {
-			System.err.println("Failed to capture desktop.");
-			return;
-		}
-
-		BufferedImage templateImage = desktop.getSubimage(rect.x, rect.y, rect.width, rect.height);
-
-		Template backgroundTemplate = new Template(bufferedImageToMat(desktop), "background");
-		Template template = new Template(bufferedImageToMat(templateImage), "template");
-
-		InternalMatch result = OpencvManager.findBestMatch(template, backgroundTemplate, MatType.COLOR);
-
-		if (result != null) {
-			System.out.println("Match found at: " + result.rectLocation);
-			System.out.println("Confidence: " + result.getScore());
-
-			Mat drawnImage = OpencvManager.drawMatch(backgroundTemplate.mat, result, new Scalar(0, 255, 0));
-			BufferedImage resultImage = matToBufferedImage(drawnImage);
-
-			ImageDisplay display = new ImageDisplay();
-			display.showImage(resultImage);
-		} else {
-			System.out.println("No match found.");
 		}
 	}
 

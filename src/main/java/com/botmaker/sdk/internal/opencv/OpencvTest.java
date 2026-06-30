@@ -2,8 +2,8 @@ package com.botmaker.sdk.internal.opencv;
 
 
 import com.botmaker.sdk.internal.capture.ScreenCapture;
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.opencv.opencv_java;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class OpencvTest {
     static{
-        Loader.load(opencv_java.class);
+        OpenCvNative.ensureLoaded();
     }
     private static final String BACKGROUNDS_DIR = "images/backgrounds";
     private static final String TEMPLATES_DIR = "images/templates";
@@ -96,14 +96,14 @@ public class OpencvTest {
             return;
         }
 
-        List<Template> backgroundTemplates = new ArrayList<>();
+        List<Mat> backgrounds = new ArrayList<>();
         for (File file : backgroundFiles) {
-            backgroundTemplates.add(new Template(file.getAbsolutePath()));
+            backgrounds.add(Imgcodecs.imread(file.getAbsolutePath()));
         }
 
-        List<Template> templates = new ArrayList<>();
+        List<Mat> templates = new ArrayList<>();
         for (File file : templateFiles) {
-            templates.add(new Template(file.getAbsolutePath()));
+            templates.add(Imgcodecs.imread(file.getAbsolutePath()));
         }
 
         System.out.println("--- Benchmarking Results ---");
@@ -111,56 +111,37 @@ public class OpencvTest {
         // --- Benchmarking findBestMatch ---
         long totalTimeBestMatch = 0;
         int bestMatchCount = 0;
-        for (Template background : backgroundTemplates) {
-            for (Template template : templates) {
+        for (Mat background : backgrounds) {
+            for (Mat template : templates) {
                 long startTime = System.nanoTime();
-                InternalMatch result = OpencvManager.findBestMatch(template, background, MatType.COLOR);
+                RawMatch result = OpencvManager.findBestMatch(template, background, false);
                 long endTime = System.nanoTime();
                 totalTimeBestMatch += (endTime - startTime);
                 bestMatchCount++;
                 if (result != null) {
-                    System.out.printf("findBestMatch: Found %s in %s with score %.4f%n",
-                            new File(template.id).getName(), new File(background.id).getName(), result.getScore());
+                    System.out.printf("findBestMatch: Found match with score %.4f%n", result.score());
                 }
             }
         }
         System.out.println("findBestMatch average time: " + (totalTimeBestMatch / bestMatchCount) / 1_000_000.0 + " ms");
 
-
         long totalTimeMultipleMatches = 0;
         int multipleMatchesCount = 0;
-        for (Template background : backgroundTemplates) {
-            for (Template template : templates) {
+        for (Mat background : backgrounds) {
+            for (Mat template : templates) {
                 long startTime = System.nanoTime();
-                List<InternalMatch> results = OpencvManager.findMultipleMatches(template, background, MatType.COLOR);
+                List<RawMatch> results = OpencvManager.findMultipleMatches(template, background, false);
                 long endTime = System.nanoTime();
                 totalTimeMultipleMatches += (endTime - startTime);
                 multipleMatchesCount++;
-                if (results != null && !results.isEmpty()) {
-                    for (InternalMatch result : results) {
-                        System.out.printf("findMultipleMatches: Found %s in %s with score %.4f%n",
-                                new File(template.id).getName(), new File(background.id).getName(), result.getScore());
-                    }
+                for (RawMatch result : results) {
+                    System.out.printf("findMultipleMatches: Found match with score %.4f%n", result.score());
                 }
             }
         }
         System.out.println("findMultipleMatches average time: " + (totalTimeMultipleMatches / multipleMatchesCount) / 1_000_000.0 + " ms");
 
-         long totalTimeBestMatchPerTemplate = 0;
-        int bestMatchPerTemplateCount = 0;
-        for (Template background : backgroundTemplates) {
-            long startTime = System.nanoTime();
-            List<InternalMatch> results = OpencvManager.findBestMatchPerTemplate(templates, background, MatType.COLOR);
-            long endTime = System.nanoTime();
-            totalTimeBestMatchPerTemplate += (endTime - startTime);
-            bestMatchPerTemplateCount++;
-            if (results != null && !results.isEmpty()) {
-                for (InternalMatch result : results) {
-                    System.out.printf("findBestMatchPerTemplate: Found match in %s with score %.4f%n",
-                            new File(background.id).getName(), result.getScore());
-                }
-            }
-        }
-        System.out.println("findBestMatchPerTemplate average time: " + (totalTimeBestMatchPerTemplate / bestMatchPerTemplateCount) / 1_000_000.0 + " ms");
+        backgrounds.forEach(Mat::release);
+        templates.forEach(Mat::release);
     }
 }

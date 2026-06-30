@@ -4,10 +4,9 @@ import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
 import com.botmaker.sdk.api.capture.Screen;
 import com.botmaker.sdk.api.interaction.Wait;
-import com.botmaker.sdk.internal.opencv.InternalMatch;
-import com.botmaker.sdk.internal.opencv.MatType;
 import com.botmaker.sdk.internal.opencv.OpencvManager;
-import com.botmaker.sdk.internal.opencv.Template;
+import com.botmaker.sdk.internal.opencv.RawMatch;
+import org.opencv.core.Mat;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -29,7 +28,9 @@ public class ImageFinder {
     }
 
     public static MatchResult find(ImageTemplate template, Rect region, double confidence) {
-        Template background = null;
+        // Note: a genuine native-load failure surfaces as an Error (e.g. UnsatisfiedLinkError),
+        // which is intentionally NOT caught here so it cannot masquerade as "not found".
+        Mat background = null;
         try {
             BufferedImage screenshot = Screen.capture();
 
@@ -37,29 +38,21 @@ public class ImageFinder {
                 return MatchResult.notFound();
             }
 
-            background = new Template(screenshot, "background");
+            background = OpencvManager.bufferedImageToMat(screenshot);
 
-            InternalMatch internalResult =
-                    OpencvManager.findBestMatch(
-                            template.getInternalTemplate(),
-                            background,
-                            MatType.COLOR,
-                            confidence
-                    );
+            RawMatch match = OpencvManager.findBestMatch(template.getMat(), background, false, confidence);
 
-            if (internalResult != null && internalResult.isMatch()) {
-                Rect rect = internalResult.getRect();
-
+            if (match != null) {
                 int offsetX = region != null ? region.x : 0;
                 int offsetY = region != null ? region.y : 0;
 
-                Point location = new Point(rect.x + offsetX, rect.y + offsetY);
+                Point location = new Point(match.x() + offsetX, match.y() + offsetY);
 
                 return new MatchResult(
                         location,
-                        rect.width,
-                        rect.height,
-                        internalResult.getScore(),
+                        match.width(),
+                        match.height(),
+                        match.score(),
                         template.getId()
                 );
             }
@@ -74,7 +67,7 @@ public class ImageFinder {
             return MatchResult.notFound();
         } finally {
             if (background != null) {
-                background.close();
+                background.release();
             }
         }
     }
@@ -106,7 +99,7 @@ public class ImageFinder {
     }
 
     public static List<MatchResult> findAll(ImageTemplate template, Rect region, double confidence) {
-        Template background = null;
+        Mat background = null;
         try {
             BufferedImage screenshot = Screen.capture();
 
@@ -114,29 +107,22 @@ public class ImageFinder {
                 return new ArrayList<>();
             }
 
-            background = new Template(screenshot, "background");
+            background = OpencvManager.bufferedImageToMat(screenshot);
 
-            List<InternalMatch> internalResults =
-                    OpencvManager.findMultipleMatches(
-                            template.getInternalTemplate(),
-                            background,
-                            MatType.COLOR,
-                            confidence
-                    );
+            List<RawMatch> matches =
+                    OpencvManager.findMultipleMatches(template.getMat(), background, false, confidence);
 
             int offsetX = region != null ? region.x : 0;
             int offsetY = region != null ? region.y : 0;
 
-            return internalResults.stream()
-                    .filter(InternalMatch::isMatch)
+            return matches.stream()
                     .map(r -> {
-                        Rect rect = r.getRect();
-                        Point location = new Point(rect.x + offsetX, rect.y + offsetY);
+                        Point location = new Point(r.x() + offsetX, r.y() + offsetY);
                         return new MatchResult(
                                 location,
-                                rect.width,
-                                rect.height,
-                                r.getScore(),
+                                r.width(),
+                                r.height(),
+                                r.score(),
                                 template.getId()
                         );
                     })
@@ -150,7 +136,7 @@ public class ImageFinder {
             return new ArrayList<>();
         } finally {
             if (background != null) {
-                background.close();
+                background.release();
             }
         }
     }

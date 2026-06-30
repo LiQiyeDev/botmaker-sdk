@@ -25,9 +25,9 @@
     <dependencies>
         <!-- JavaCV / OpenCV (native bindings used for image matching) -->
         <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv-platform</artifactId>
-            <version>1.5.12</version>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.9.0-0</version>
         </dependency>
 
         <!-- JNA (native Windows/Linux window + input control) -->
