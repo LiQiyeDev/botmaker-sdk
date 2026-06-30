@@ -10,6 +10,9 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+images
+/resources
+*.png
 # ── Gradle (legacy, no longer used) ───────────────────────
 .gradle/
 build/
