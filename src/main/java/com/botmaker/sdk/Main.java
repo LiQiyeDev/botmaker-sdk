@@ -1,10 +1,13 @@
 package com.botmaker.sdk;
 
 import com.botmaker.sdk.api.BotMaker;
+import com.botmaker.sdk.api.vision.ImageClicker;
 import com.botmaker.sdk.api.vision.ImageFinder;
 import com.botmaker.sdk.api.vision.ImageTemplate;
 import com.botmaker.sdk.api.vision.MatchResult;
 import com.botmaker.sdk.internal.opencv.OpenCvNative;
+
+import static com.botmaker.sdk.api.vision.ImageClicker.click;
 
 public class Main {
 
@@ -19,7 +22,6 @@ public class Main {
 		for (int i = 1; i <= 5; i++) {
 			System.out.println("i = " + i);
 		}
-        MatchResult r= ImageFinder.find(new ImageTemplate("src/main/resources/images/accept_button.png"));
-		BotMaker.print(r.isFound());
+        Boolean r= click(new ImageTemplate("src/main/resources/images/accept_button.png"));
     }
 }

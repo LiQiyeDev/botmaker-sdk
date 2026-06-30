@@ -70,6 +70,13 @@ public interface X11 extends Library {
 							  IntByReference destXReturn, IntByReference destYReturn,
 							  PointerByReference childReturn);
 
+	// Pointer query (root-window coordinates, matching XTest's coordinate space)
+	boolean XQueryPointer(Pointer display, Pointer window,
+						  PointerByReference rootReturn, PointerByReference childReturn,
+						  IntByReference rootXReturn, IntByReference rootYReturn,
+						  IntByReference winXReturn, IntByReference winYReturn,
+						  IntByReference maskReturn);
+
 	// Window focus
 	int XGetInputFocus(Pointer display, PointerByReference focusReturn, IntByReference revertToReturn);
 	int XSetInputFocus(Pointer display, Pointer focus, int revertTo, long time);

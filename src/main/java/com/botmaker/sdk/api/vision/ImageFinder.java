@@ -43,8 +43,9 @@ public class ImageFinder {
             RawMatch match = OpencvManager.findBestMatch(template.getMat(), background, false, confidence);
 
             if (match != null) {
-                int offsetX = region != null ? region.x : 0;
-                int offsetY = region != null ? region.y : 0;
+                Point origin = Screen.captureOrigin();
+                int offsetX = (region != null ? region.x : 0) + (int) origin.x;
+                int offsetY = (region != null ? region.y : 0) + (int) origin.y;
 
                 Point location = new Point(match.x() + offsetX, match.y() + offsetY);
 
@@ -112,8 +113,9 @@ public class ImageFinder {
             List<RawMatch> matches =
                     OpencvManager.findMultipleMatches(template.getMat(), background, false, confidence);
 
-            int offsetX = region != null ? region.x : 0;
-            int offsetY = region != null ? region.y : 0;
+            Point origin = Screen.captureOrigin();
+            int offsetX = (region != null ? region.x : 0) + (int) origin.x;
+            int offsetY = (region != null ? region.y : 0) + (int) origin.y;
 
             return matches.stream()
                     .map(r -> {

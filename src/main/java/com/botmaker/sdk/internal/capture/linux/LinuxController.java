@@ -333,7 +333,24 @@ public class LinuxController implements NativeController, AutoCloseable {
 		}
 
 		try {
-			// Move mouse to position (fake motion - doesn't move visible cursor)
+			// XTestFakeMotionEvent warps the real cursor, so remember where it was to restore it after.
+			// Restore is X11-only: under native Wayland we run as an XWayland client that can *write*
+			// the pointer (warp/click) but cannot *read* the global cursor position (XQueryPointer
+			// returns a stale constant when the cursor isn't over our surface — and the bot has none).
+			// So on Wayland we skip the restore (cursor stays on target) rather than teleport it to a
+			// bogus fixed spot. The Wayland-correct path (RemoteDesktop portal / libei) is roadmapped.
+			boolean canRestore = System.getenv("WAYLAND_DISPLAY") == null;
+			IntByReference rootX = new IntByReference();
+			IntByReference rootY = new IntByReference();
+			boolean haveCurrent = false;
+			if (canRestore) {
+				Pointer root = X11.INSTANCE.XDefaultRootWindow(display);
+				haveCurrent = X11.INSTANCE.XQueryPointer(display, root,
+						new PointerByReference(), new PointerByReference(),
+						rootX, rootY, new IntByReference(), new IntByReference(), new IntByReference());
+			}
+
+			// Move pointer to the click position (this moves the visible cursor)
 			XTest.INSTANCE.XTestFakeMotionEvent(display, -1, xAbs, yAbs, 0);
 			X11.INSTANCE.XFlush(display);
 
@@ -350,6 +367,12 @@ public class LinuxController implements NativeController, AutoCloseable {
 			// Release left button
 			XTest.INSTANCE.XTestFakeButtonEvent(display, XTest.Button1, false, 0);
 			X11.INSTANCE.XFlush(display);
+
+			// Restore the pointer to where the user left it, minimizing the visible flicker
+			if (haveCurrent) {
+				XTest.INSTANCE.XTestFakeMotionEvent(display, -1, rootX.getValue(), rootY.getValue(), 0);
+				X11.INSTANCE.XFlush(display);
+			}
 
 			System.out.println("[Linux] Click sent to (" + xAbs + ", " + yAbs + ")");
 		} catch (Exception e) {

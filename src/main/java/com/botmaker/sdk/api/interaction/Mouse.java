@@ -1,7 +1,7 @@
 package com.botmaker.sdk.api.interaction;
 
 import com.botmaker.sdk.api.Point;
-import com.botmaker.sdk.internal.capture.Clicker;
+import com.botmaker.sdk.internal.capture.core.NativeControllerFactory;
 
 public class Mouse {
 
@@ -11,7 +11,7 @@ public class Mouse {
     public static void click(Point p) {
         if (p == null) return;
         // Delegate to internal implementation, explicitly casting double coordinates to int
-        Clicker.postLeftClickScreen((int) p.x, (int) p.y);
+        NativeControllerFactory.get().postLeftClickScreen((int) p.x, (int) p.y);
     }
 
     public static void click(int x, int y) {

@@ -129,7 +129,7 @@ public class ScreenCapture {
 	 * Get the virtual screen bounds that encompasses all monitors.
 	 * Single source of truth for multi-monitor bounds, shared by the capture backends.
 	 */
-	static Rectangle getVirtualScreenBounds() {
+	public static Rectangle getVirtualScreenBounds() {
 		Rectangle virtualBounds = new Rectangle();
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();

@@ -109,8 +109,9 @@ public class ImageState {
 
         Mat background = OpencvManager.bufferedImageToMat(screenshot);
 
-        int offsetX = region != null ? region.x : 0;
-        int offsetY = region != null ? region.y : 0;
+        Point origin = Screen.captureOrigin();
+        int offsetX = (region != null ? region.x : 0) + (int) origin.x;
+        int offsetY = (region != null ? region.y : 0) + (int) origin.y;
 
         try {
             for (ImageTemplate template : templates) {

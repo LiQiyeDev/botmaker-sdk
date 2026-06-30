@@ -11,6 +11,10 @@ call its public `com.botmaker.sdk.api.*` facades.
 For large changes, write the plan to a dedicated plan file before starting implementation, so work
 can be resumed if a session is interrupted.
 
+**Always update `ROADMAP.md` whenever you add a feature or refactor code** — append a dated entry
+under "Done" (and add/adjust "Deferred / next" items as needed). It is the running history future
+sessions rely on to understand what changed and what's intentionally left for later.
+
 ## Commands
 
 ```bash
@@ -86,6 +90,21 @@ and every `NativeController.captureDesktop()` (Windows/Linux) route through it; 
 To add cross-compositor Wayland support (GNOME/sway), add a portal/PipeWire `CaptureBackend` and wire
 it into `select()` — no caller changes needed. Per-window capture (Windows GDI `PrintWindow` / Robot)
 also lives in `ScreenCapture` and is unchanged.
+
+### Mouse clicks & the Wayland input limitation
+
+`api.interaction.Mouse.click` routes through `NativeControllerFactory.get()` (Windows → `Clicker`/
+`User32 PostMessage`; Linux → `LinuxController` XTest, with an AWT `Robot` fallback). Match
+coordinates are absolute: `ImageFinder`/`ImageState` add `Screen.captureOrigin()` (the virtual-screen
+origin) so clicks are correct even when a monitor sits left/above the primary.
+
+On Linux the click warps the real cursor, then restores it. **Restore is X11-only:** under native
+Wayland the JVM is an **XWayland** client that can *write* the pointer (warp + click work) but
+**cannot read the global cursor position** (XQueryPointer / AWT `MouseInfo` return a stale constant
+when the cursor isn't over our surface — and the bot has no window). `LinuxController` therefore
+skips the restore when `WAYLAND_DISPLAY` is set, leaving the cursor on the target. The Wayland-correct
+"click without disturbing the cursor" path is the xdg-desktop-portal **RemoteDesktop** (libei/
+PipeWire) interface — deferred; see `ROADMAP.md`.
 
 ## Out of scope (for now)
 
