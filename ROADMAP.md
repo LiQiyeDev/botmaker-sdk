@@ -8,6 +8,23 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-02 — Game launch API
+
+**Done**
+- **`api.launch.Game` facade.** New public static entry point exposed as Studio blocks:
+  `Game.launch(String executablePath, String... args)` starts any executable via `ProcessBuilder`
+  (detached), and `Game.launchSteam(String appId)` / `launchSteam(int)` hands a Steam appId to the
+  local Steam client via the cross-platform `steam://rungameid/<appId>` URL, falling back to
+  `steam -applaunch <appId>`. Launching a Steam game needs no login of ours — the installed, signed-in
+  Steam client owns the session; we never touch credentials.
+- **`internal/launch/UriLauncher`.** Small OS URL-handler opener (Desktop.browse → `xdg-open`/`open`/
+  `rundll32`), mirroring the Studio's `util.BrowserLauncher` (duplicated because the SDK can't depend
+  on the Studio). Used by `launchSteam` to invoke `steam://` URLs.
+
+**Deferred / next**
+- No "wait for game window" helper yet — the vision blocks (`ImageWaiter`) already poll for on-screen
+  templates, which is how a test bot detects the game is up.
+
 ## 2026-06-30 — Linux click support
 
 **Done**
