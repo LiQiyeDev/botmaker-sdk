@@ -2,7 +2,7 @@ package com.botmaker.sdk.api.vision;
 
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
-import com.botmaker.sdk.api.capture.Screen;
+import com.botmaker.sdk.api.capture.CaptureSource;
 import com.botmaker.sdk.api.interaction.Wait;
 import com.botmaker.sdk.internal.opencv.OpencvManager;
 import com.botmaker.sdk.internal.opencv.RawMatch;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class ImageFinder {
 
     public static MatchResult find(ImageTemplate template) {
-        return find(template, null, ClickConfig.DEFAULT_CONFIDENCE);
+        return find(template, (Rect) null, ClickConfig.DEFAULT_CONFIDENCE);
     }
 
     public static MatchResult find(ImageTemplate template, Rect region) {
@@ -24,15 +24,29 @@ public class ImageFinder {
     }
 
     public static MatchResult find(ImageTemplate template, double confidence) {
-        return find(template, null, confidence);
+        return find(template, (Rect) null, confidence);
     }
 
     public static MatchResult find(ImageTemplate template, Rect region, double confidence) {
+        return find(template, CaptureSource.screen(), region, confidence);
+    }
+
+    // --- Window-targeted overloads: match (and return absolute coords) within a specific source ---
+
+    public static MatchResult find(ImageTemplate template, CaptureSource source) {
+        return find(template, source, null, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static MatchResult find(ImageTemplate template, CaptureSource source, double confidence) {
+        return find(template, source, null, confidence);
+    }
+
+    public static MatchResult find(ImageTemplate template, CaptureSource source, Rect region, double confidence) {
         // Note: a genuine native-load failure surfaces as an Error (e.g. UnsatisfiedLinkError),
         // which is intentionally NOT caught here so it cannot masquerade as "not found".
         Mat background = null;
         try {
-            BufferedImage screenshot = Screen.capture();
+            BufferedImage screenshot = source.capture();
 
             if (screenshot == null) {
                 return MatchResult.notFound();
@@ -43,7 +57,7 @@ public class ImageFinder {
             RawMatch match = OpencvManager.findBestMatch(template.getMat(), background, false, confidence);
 
             if (match != null) {
-                Point origin = Screen.captureOrigin();
+                Point origin = source.origin();
                 int offsetX = (region != null ? region.x : 0) + (int) origin.x;
                 int offsetY = (region != null ? region.y : 0) + (int) origin.y;
 
@@ -100,9 +114,13 @@ public class ImageFinder {
     }
 
     public static List<MatchResult> findAll(ImageTemplate template, Rect region, double confidence) {
+        return findAll(template, CaptureSource.screen(), region, confidence);
+    }
+
+    public static List<MatchResult> findAll(ImageTemplate template, CaptureSource source, Rect region, double confidence) {
         Mat background = null;
         try {
-            BufferedImage screenshot = Screen.capture();
+            BufferedImage screenshot = source.capture();
 
             if (screenshot == null) {
                 return new ArrayList<>();
@@ -113,7 +131,7 @@ public class ImageFinder {
             List<RawMatch> matches =
                     OpencvManager.findMultipleMatches(template.getMat(), background, false, confidence);
 
-            Point origin = Screen.captureOrigin();
+            Point origin = source.origin();
             int offsetX = (region != null ? region.x : 0) + (int) origin.x;
             int offsetY = (region != null ? region.y : 0) + (int) origin.y;
 

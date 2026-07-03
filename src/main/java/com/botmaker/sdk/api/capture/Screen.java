@@ -22,4 +22,22 @@ public class Screen {
         java.awt.Point origin = ScreenCapture.getVirtualScreenBounds().getLocation();
         return new Point(origin.x, origin.y);
     }
+
+    /**
+     * The whole desktop as a {@link CaptureSource}, so matchers can treat the screen and a
+     * {@link Window} uniformly. Delegates to {@link #capture()} / {@link #captureOrigin()}.
+     */
+    public static CaptureSource asSource() {
+        return new CaptureSource() {
+            @Override
+            public BufferedImage capture() {
+                return Screen.capture();
+            }
+
+            @Override
+            public Point origin() {
+                return Screen.captureOrigin();
+            }
+        };
+    }
 }

@@ -2,7 +2,7 @@ package com.botmaker.sdk.api.vision;
 
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
-import com.botmaker.sdk.api.capture.Screen;
+import com.botmaker.sdk.api.capture.CaptureSource;
 import com.botmaker.sdk.api.interaction.Mouse;
 import com.botmaker.sdk.api.interaction.Wait;
 import com.botmaker.sdk.internal.opencv.OpencvManager;
@@ -26,27 +26,7 @@ public class ImageState {
     }
 
     public static List<String> findWhichAreVisible(Rect region, double confidence, ImageTemplate... templates) {
-        List<String> visibleIds = new ArrayList<>();
-
-        BufferedImage screenshot = Screen.capture();
-
-        if (screenshot == null) {
-            return visibleIds;
-        }
-
-        Mat background = OpencvManager.bufferedImageToMat(screenshot);
-        try {
-            for (ImageTemplate template : templates) {
-                RawMatch result = OpencvManager.findBestMatch(template.getMat(), background, false, confidence);
-                if (result != null) {
-                    visibleIds.add(template.getId());
-                }
-            }
-        } finally {
-            background.release();
-        }
-
-        return visibleIds;
+        return new ArrayList<>(computeState(CaptureSource.screen(), region, confidence, templates).getVisibleIds());
     }
 
     public static boolean contains(List<String> visibleIds, String templateId) {
@@ -99,17 +79,29 @@ public class ImageState {
 
     public static Map<String, MatchResult> findWhichAreVisibleDetailed(Rect region, double confidence,
                                                                        ImageTemplate... templates) {
+        return computeState(CaptureSource.screen(), region, confidence, templates).visibleResults;
+    }
+
+    /**
+     * Capture {@code source} <b>once</b> and evaluate every template against it, returning the full
+     * {@link ScreenState} (visible ids + detailed match results in the source's absolute coordinate
+     * space). This is the single-capture core shared by {@link #checkState} and {@code Vision.evaluate};
+     * it replaces the old two-capture path where visible-ids and detailed-results were computed by
+     * two separate screen grabs.
+     */
+    static ScreenState computeState(CaptureSource source, Rect region, double confidence,
+                                    ImageTemplate... templates) {
+        List<String> ids = new ArrayList<>();
         Map<String, MatchResult> results = new HashMap<>();
 
-        BufferedImage screenshot = Screen.capture();
-
+        BufferedImage screenshot = source.capture();
         if (screenshot == null) {
-            return results;
+            return new ScreenState(ids, results);
         }
 
         Mat background = OpencvManager.bufferedImageToMat(screenshot);
 
-        Point origin = Screen.captureOrigin();
+        Point origin = source.origin();
         int offsetX = (region != null ? region.x : 0) + (int) origin.x;
         int offsetY = (region != null ? region.y : 0) + (int) origin.y;
 
@@ -118,24 +110,22 @@ public class ImageState {
                 RawMatch match = OpencvManager.findBestMatch(template.getMat(), background, false, confidence);
 
                 if (match != null) {
+                    ids.add(template.getId());
                     Point location = new Point(match.x() + offsetX, match.y() + offsetY);
-
-                    MatchResult result = new MatchResult(
+                    results.put(template.getId(), new MatchResult(
                             location,
                             match.width(),
                             match.height(),
                             match.score(),
                             template.getId()
-                    );
-
-                    results.put(template.getId(), result);
+                    ));
                 }
             }
         } finally {
             background.release();
         }
 
-        return results;
+        return new ScreenState(ids, results);
     }
 
     public static class ScreenState {
@@ -206,7 +196,7 @@ public class ImageState {
     }
 
     public static ScreenState checkState(ImageTemplate... templates) {
-        return checkState(null, ClickConfig.DEFAULT_CONFIDENCE, templates);
+        return checkState((Rect) null, ClickConfig.DEFAULT_CONFIDENCE, templates);
     }
 
     public static ScreenState checkState(Rect region, ImageTemplate... templates) {
@@ -214,8 +204,16 @@ public class ImageState {
     }
 
     public static ScreenState checkState(Rect region, double confidence, ImageTemplate... templates) {
-        List<String> ids = findWhichAreVisible(region, confidence, templates);
-        Map<String, MatchResult> results = findWhichAreVisibleDetailed(region, confidence, templates);
-        return new ScreenState(ids, results);
+        return computeState(CaptureSource.screen(), region, confidence, templates);
+    }
+
+    // --- Source-targeted state (used by Vision.evaluate to check a specific window) ---
+
+    public static ScreenState checkState(CaptureSource source, ImageTemplate... templates) {
+        return computeState(source, null, ClickConfig.DEFAULT_CONFIDENCE, templates);
+    }
+
+    public static ScreenState checkState(CaptureSource source, double confidence, ImageTemplate... templates) {
+        return computeState(source, null, confidence, templates);
     }
 }

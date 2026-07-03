@@ -81,6 +81,15 @@ public interface X11 extends Library {
 	int XGetInputFocus(Pointer display, PointerByReference focusReturn, IntByReference revertToReturn);
 	int XSetInputFocus(Pointer display, Pointer focus, int revertTo, long time);
 
+	// Window geometry mutation (move / resize)
+	int XMoveWindow(Pointer display, Pointer window, int x, int y);
+	int XResizeWindow(Pointer display, Pointer window, int width, int height);
+	int XMoveResizeWindow(Pointer display, Pointer window, int x, int y, int width, int height);
+	int XRaiseWindow(Pointer display, Pointer window);
+
+	// Keyboard: map an X keysym to a physical keycode for XTest injection
+	byte XKeysymToKeycode(Pointer display, long keysym);
+
 	// Atoms
 	Pointer XInternAtom(Pointer display, String atomName, boolean onlyIfExists);
 	int XGetAtomName(Pointer display, Pointer atom, PointerByReference nameReturn);

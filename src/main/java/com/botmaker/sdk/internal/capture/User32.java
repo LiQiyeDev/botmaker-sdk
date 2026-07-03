@@ -69,6 +69,35 @@ public interface User32 extends StdCallLibrary {
 
     HWND GetAncestor(HWND hWnd, int gaFlags);     // GA_ROOT = 2, GA_ROOTOWNER = 3
     boolean ShowWindow(HWND hWnd, int nCmdShow);  // SW_RESTORE = 9
+
+    /* ---------  window move / resize  --------- */
+
+    boolean SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, int uFlags);
+
+    int SWP_NOSIZE     = 0x0001;
+    int SWP_NOMOVE     = 0x0002;
+    int SWP_NOZORDER   = 0x0004;
+    int SWP_NOACTIVATE = 0x0010;
+    int SW_RESTORE     = 9;
+
+    /* ---------  input synthesis (keybd_event / mouse_event are simple + struct-free)  --------- */
+
+    void keybd_event(byte bVk, byte bScan, int dwFlags, Pointer dwExtraInfo);
+    void mouse_event(int dwFlags, int dx, int dy, int dwData, Pointer dwExtraInfo);
+    boolean SetCursorPos(int x, int y);
+    short VkKeyScanA(byte ch);
+
+    int KEYEVENTF_KEYUP      = 0x0002;
+
+    int MOUSEEVENTF_MOVE      = 0x0001;
+    int MOUSEEVENTF_LEFTDOWN  = 0x0002;
+    int MOUSEEVENTF_LEFTUP    = 0x0004;
+    int MOUSEEVENTF_RIGHTDOWN = 0x0008;
+    int MOUSEEVENTF_RIGHTUP   = 0x0010;
+    int MOUSEEVENTF_MIDDLEDOWN = 0x0020;
+    int MOUSEEVENTF_MIDDLEUP   = 0x0040;
+    int MOUSEEVENTF_WHEEL      = 0x0800;
+
     /* ---------  mouse constants  --------- */
 
     int WM_LBUTTONDOWN = 0x0201;

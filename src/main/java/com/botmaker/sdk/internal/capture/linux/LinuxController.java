@@ -381,6 +381,150 @@ public class LinuxController implements NativeController, AutoCloseable {
 		}
 	}
 
+	@Override
+	public void focusWindow(GenericWindow window) {
+		checkNotClosed();
+		if (!x11Available || window == null) {
+			return;
+		}
+		try {
+			Pointer x11Window = (Pointer) window.getNativeHandle();
+			X11.INSTANCE.XRaiseWindow(display, x11Window);
+			X11.INSTANCE.XSetInputFocus(display, x11Window, X11.RevertToParent, 0);
+			X11.INSTANCE.XFlush(display);
+		} catch (Exception e) {
+			System.err.println("[Linux] Error focusing window: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void moveWindow(GenericWindow window, int x, int y) {
+		checkNotClosed();
+		if (!x11Available || window == null) {
+			return;
+		}
+		try {
+			X11.INSTANCE.XMoveWindow(display, (Pointer) window.getNativeHandle(), x, y);
+			X11.INSTANCE.XFlush(display);
+		} catch (Exception e) {
+			System.err.println("[Linux] Error moving window: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void resizeWindow(GenericWindow window, int width, int height) {
+		checkNotClosed();
+		if (!x11Available || window == null) {
+			return;
+		}
+		try {
+			X11.INSTANCE.XResizeWindow(display, (Pointer) window.getNativeHandle(), width, height);
+			X11.INSTANCE.XFlush(display);
+		} catch (Exception e) {
+			System.err.println("[Linux] Error resizing window: " + e.getMessage());
+		}
+	}
+
+	// --- Input synthesis ---
+
+	private static final long KEYSYM_SHIFT_L = 0xFFE1L;
+
+	@Override
+	public void keyDown(int nativeKeyCode) {
+		fakeKey(nativeKeyCode, true);
+	}
+
+	@Override
+	public void keyUp(int nativeKeyCode) {
+		fakeKey(nativeKeyCode, false);
+	}
+
+	/** nativeKeyCode is an X keysym; resolve it to a physical keycode for XTest. */
+	private void fakeKey(int keysym, boolean press) {
+		checkNotClosed();
+		if (!x11Available) {
+			return;
+		}
+		try {
+			int keycode = X11.INSTANCE.XKeysymToKeycode(display, keysym) & 0xFF;
+			if (keycode == 0) {
+				return;
+			}
+			XTest.INSTANCE.XTestFakeKeyEvent(display, keycode, press, 0);
+			X11.INSTANCE.XFlush(display);
+		} catch (Exception e) {
+			System.err.println("[Linux] Error posting key event: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void typeText(String text) {
+		checkNotClosed();
+		if (!x11Available || text == null) {
+			return;
+		}
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			// For Latin-1 the X keysym equals the code point; uppercase letters need Shift held.
+			boolean needShift = Character.isUpperCase(c);
+			if (needShift) {
+				fakeKey((int) KEYSYM_SHIFT_L, true);
+			}
+			fakeKey(c, true);
+			fakeKey(c, false);
+			if (needShift) {
+				fakeKey((int) KEYSYM_SHIFT_L, false);
+			}
+		}
+	}
+
+	@Override
+	public void mouseMove(int xAbs, int yAbs) {
+		checkNotClosed();
+		if (!x11Available) {
+			return;
+		}
+		try {
+			XTest.INSTANCE.XTestFakeMotionEvent(display, -1, xAbs, yAbs, 0);
+			X11.INSTANCE.XFlush(display);
+		} catch (Exception e) {
+			System.err.println("[Linux] Error moving mouse: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void mouseButton(int button, boolean press) {
+		checkNotClosed();
+		if (!x11Available) {
+			return;
+		}
+		try {
+			XTest.INSTANCE.XTestFakeButtonEvent(display, button, press, 0);
+			X11.INSTANCE.XFlush(display);
+		} catch (Exception e) {
+			System.err.println("[Linux] Error posting mouse button: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public void scroll(int amount) {
+		checkNotClosed();
+		if (!x11Available || amount == 0) {
+			return;
+		}
+		int button = amount > 0 ? XTest.Button4 : XTest.Button5; // 4 = up/away, 5 = down/toward
+		int ticks = Math.abs(amount);
+		try {
+			for (int i = 0; i < ticks; i++) {
+				XTest.INSTANCE.XTestFakeButtonEvent(display, button, true, 0);
+				XTest.INSTANCE.XTestFakeButtonEvent(display, button, false, 0);
+			}
+			X11.INSTANCE.XFlush(display);
+		} catch (Exception e) {
+			System.err.println("[Linux] Error scrolling: " + e.getMessage());
+		}
+	}
+
 	/**
 	 * Convert X11 window to GenericWindow
 	 */
