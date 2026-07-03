@@ -48,8 +48,8 @@ static facades (`ImageFinder`, `ImageClicker`, `ScreenCapture`, …) are statele
 
 - **`com.botmaker.sdk.api.*`** is the stable contract Studio compiles user bots against — **do not
   change existing public method signatures.** It contains:
-  - `api.vision` — `ImageFinder`, `ImageClicker`, `ImageWaiter`, `ImageMatcher`, `ImageState`
-    (+ `ScreenState`), `MatchResult`, `ImageTemplate`, `ClickConfig`.
+  - `api.vision` — `ImageFinder` (find + `exists` + the lambda control-flow `whileExists`/`ifExists`
+    /`untilExists`), `ImageClicker`, `ImageWaiter`, `MatchResult`, `ImageTemplate`, `ClickConfig`.
   - `api.capture.Screen` (`capture()`), `api.interaction.Mouse`/`Wait`, `api.core.Direction`,
     geometry `api.Point`/`Rect`/`Size`.
   - `api.BotMaker` — console IO. `readX()` prints a SOH-wrapped `BM-INPUT:<type>` marker to stdout
@@ -71,8 +71,8 @@ return. `ImageFinder.find` deliberately does **not** catch `Error`s (e.g. `Unsat
 genuine load failure surfaces instead of masquerading as "not found".
 
 `OpencvManager` is the matching engine: it works directly on `org.opencv.core.Mat` and returns the
-internal `RawMatch` record (plain ints + score, no OpenCV types), which `ImageFinder`/`ImageState`
-map onto the public `MatchResult`. The OpenCV `Mat` lives in `ImageTemplate` — the old `Template` /
+internal `RawMatch` record (plain ints + score, no OpenCV types), which `ImageFinder`
+maps onto the public `MatchResult`. The OpenCV `Mat` lives in `ImageTemplate` — the old `Template` /
 `InternalMatch` / `MatType` wrapper layer has been collapsed.
 
 ### Screen capture
@@ -95,7 +95,7 @@ also lives in `ScreenCapture` and is unchanged.
 
 `api.interaction.Mouse.click` routes through `NativeControllerFactory.get()` (Windows → `Clicker`/
 `User32 PostMessage`; Linux → `LinuxController` XTest, with an AWT `Robot` fallback). Match
-coordinates are absolute: `ImageFinder`/`ImageState` add `Screen.captureOrigin()` (the virtual-screen
+coordinates are absolute: `ImageFinder` adds `Screen.captureOrigin()` (the virtual-screen
 origin) so clicks are correct even when a monitor sits left/above the primary.
 
 On Linux the click warps the real cursor, then restores it. **Restore is X11-only:** under native

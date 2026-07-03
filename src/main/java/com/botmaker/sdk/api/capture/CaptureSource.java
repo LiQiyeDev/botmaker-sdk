@@ -6,8 +6,8 @@ import java.awt.image.BufferedImage;
 
 /**
  * A source of pixels the vision layer can match against — either the whole {@link Screen} or a
- * single {@link Window}. Abstracting capture behind this seam lets {@code ImageFinder}/{@code
- * ImageState}/{@code Vision} target a specific window (even off-screen or on a second monitor)
+ * single {@link Window}. Abstracting capture behind this seam lets {@code ImageFinder} target a
+ * specific window (even off-screen or on a second monitor)
  * without duplicating any matching logic: the matcher runs on {@link #capture()} and converts
  * in-image match coordinates to absolute screen coordinates by adding {@link #origin()}.
  */

@@ -15,8 +15,8 @@ import java.util.Optional;
 /**
  * A specific application window the bot can target — capture it, click inside it, and manage it
  * (focus / move / resize). Because {@code Window} is a {@link CaptureSource}, it can be passed
- * straight into the vision layer (e.g. {@code ImageFinder.find(template, window)} or
- * {@code Vision.evaluate(window, ...)}) so templates are matched and clicked in the window's own
+ * straight into the vision layer (e.g. {@code ImageFinder.find(template, window)}) so templates are
+ * matched and clicked in the window's own
  * coordinate space — surviving window moves, focus changes and multi-monitor layouts.
  *
  * <p>The underlying native handle is kept opaque; obtain a {@code Window} via the static factories.

@@ -8,6 +8,25 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-03 — Vision API simplification
+
+**Done**
+- **Collapsed `api.vision` from 9 classes to 3 action classes** (+ the unchanged value/config types
+  `MatchResult`/`ImageTemplate`/`ClickConfig`):
+  - **`ImageFinder`** — now owns single-frame lookup *and* existence: `find`/`findAll`/`findAny`, the boolean
+    `exists`/`notExists`/`existsAny` (moved from `ImageMatcher`), and lambda control-flow `whileExists` /
+    `ifExists` (take `Consumer<MatchResult>` — one capture per check, hands the action the live match) and
+    `untilExists` (takes `Runnable`, since no match exists while the template is absent).
+  - **`ImageClicker`** — trimmed to `click`/`clickAny`/`clickAll`.
+  - **`ImageWaiter`** — unchanged: `waitFor`/`waitUntilGone`/`waitAndClick`.
+- **Deleted** `Vision` (+ `evaluate`/`snapshot`), `ImageState` (+ `ScreenState`), `ImageMatcher`, and the
+  `…then…`/long-tail variants (`clickBest`, `clickFirst`, `clickUntilSuccess`, `clickWhileVisible`, `findBest`,
+  `retryUntilFound`, `clickAndThen`, `clickThenWaitFor`, `waitForGoneThenClick`, `clickOrWaitAndClick`). The
+  multi-template single-capture branch (`Vision.evaluate`/`ScreenState`) is replaced by the `whileExists`-style
+  lambdas; deleted `VisionEvaluateTest`.
+- **Callers updated:** `capture/CaptureSource` + `capture/Window` javadocs no longer reference
+  `Vision`/`ImageState`; `Main` unaffected. Studio drops `ImageMatcher`/`ImageState` from its SDK-facade list.
+
 ## 2026-07-02 — Game launch API
 
 **Done**

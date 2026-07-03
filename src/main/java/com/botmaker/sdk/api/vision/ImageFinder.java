@@ -3,7 +3,6 @@ package com.botmaker.sdk.api.vision;
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
 import com.botmaker.sdk.api.capture.CaptureSource;
-import com.botmaker.sdk.api.interaction.Wait;
 import com.botmaker.sdk.internal.opencv.OpencvManager;
 import com.botmaker.sdk.internal.opencv.RawMatch;
 import org.opencv.core.Mat;
@@ -11,8 +10,17 @@ import org.opencv.core.Mat;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * Single-frame image lookup: does this template appear on screen right now, and where?
+ *
+ * <p>Besides the raw {@code find}/{@code findAll}/{@code findAny} matchers this class also owns the
+ * boolean {@code exists} checks and the lambda control-flow helpers ({@link #whileExists},
+ * {@link #untilExists}, {@link #ifExists}) — each is one capture that hands the matched
+ * {@link MatchResult} to your action, so you can act on the location without a second lookup.
+ */
 public class ImageFinder {
 
     public static MatchResult find(ImageTemplate template) {
@@ -161,42 +169,56 @@ public class ImageFinder {
         }
     }
 
-    public static MatchResult findBest(ImageTemplate... templates) {
-        return findBest(null, ClickConfig.DEFAULT_CONFIDENCE, templates);
+    // --- Existence checks ---
+
+    public static boolean exists(ImageTemplate template) {
+        return find(template).isFound();
     }
 
-    public static MatchResult findBest(Rect region, ImageTemplate... templates) {
-        return findBest(region, ClickConfig.DEFAULT_CONFIDENCE, templates);
+    public static boolean exists(ImageTemplate template, Rect region) {
+        return find(template, region).isFound();
     }
 
-    public static MatchResult findBest(Rect region, double confidence, ImageTemplate... templates) {
-        MatchResult best = MatchResult.notFound();
+    public static boolean exists(ImageTemplate template, double confidence) {
+        return find(template, confidence).isFound();
+    }
 
-        for (ImageTemplate template : templates) {
-            MatchResult result = find(template, region, confidence);
-            if (result.isFound() && result.getConfidence() > best.getConfidence()) {
-                best = result;
-            }
+    public static boolean notExists(ImageTemplate template) {
+        return !find(template).isFound();
+    }
+
+    public static boolean notExists(ImageTemplate template, Rect region) {
+        return !find(template, region).isFound();
+    }
+
+    public static boolean existsAny(ImageTemplate... templates) {
+        return findAny(templates).isFound();
+    }
+
+    // --- Lambda control-flow: act on the live match, one capture per check ---
+
+    /** Run {@code action} once with the match if {@code template} is currently visible. */
+    public static boolean ifExists(ImageTemplate template, Consumer<MatchResult> action) {
+        MatchResult result = find(template);
+        if (result.isFound()) {
+            action.accept(result);
+            return true;
         }
-
-        return best;
+        return false;
     }
 
-    public static MatchResult retryUntilFound(ImageTemplate template, int maxAttempts) {
-        return retryUntilFound(template, null, maxAttempts, ClickConfig.DEFAULT_CONFIDENCE);
-    }
-
-    public static MatchResult retryUntilFound(ImageTemplate template, Rect region, int maxAttempts, double confidence) {
-        for (int attempt = 0; attempt < maxAttempts; attempt++) {
-            MatchResult result = find(template, region, confidence);
-
-            if (result.isFound()) {
-                return result;
-            }
-
-            Wait.milliseconds(ClickConfig.DEFAULT_NOT_FOUND_DELAY);
+    /** Keep running {@code action} (with the fresh match each time) as long as {@code template} stays visible. */
+    public static void whileExists(ImageTemplate template, Consumer<MatchResult> action) {
+        MatchResult result;
+        while ((result = find(template)).isFound()) {
+            action.accept(result);
         }
+    }
 
-        return MatchResult.notFound();
+    /** Keep running {@code action} until {@code template} appears (no match exists while it's absent). */
+    public static void untilExists(ImageTemplate template, Runnable action) {
+        while (!exists(template)) {
+            action.run();
+        }
     }
 }
