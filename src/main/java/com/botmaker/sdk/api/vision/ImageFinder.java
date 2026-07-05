@@ -113,6 +113,145 @@ public class ImageFinder {
         return MatchResult.notFound();
     }
 
+    // --- Group matching: first-match over an ImageTemplateGroup (mirrors findAny) ---
+
+    public static MatchResult find(ImageTemplateGroup group) {
+        return findAny(null, ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
+    }
+
+    public static MatchResult find(ImageTemplateGroup group, Rect region) {
+        return findAny(region, ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
+    }
+
+    public static MatchResult find(ImageTemplateGroup group, Rect region, double confidence) {
+        return findAny(region, confidence, group.toArray());
+    }
+
+    // --- Best match: evaluate fully and return the single highest-scoring match ---
+
+    /**
+     * The best location for {@code template}. Where {@code find} may accept the first location that
+     * clears the threshold, {@code findBest} always returns the globally highest-scoring one.
+     */
+    public static MatchResult findBest(ImageTemplate template) {
+        return find(template);
+    }
+
+    public static MatchResult findBest(ImageTemplate template, Rect region) {
+        return find(template, region);
+    }
+
+    public static MatchResult findBest(ImageTemplate template, Rect region, double confidence) {
+        return find(template, region, confidence);
+    }
+
+    /** The single highest-scoring match across every template in {@code group}. */
+    public static MatchResult findBest(ImageTemplateGroup group) {
+        return findBest(group, null, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static MatchResult findBest(ImageTemplateGroup group, Rect region) {
+        return findBest(group, region, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static MatchResult findBest(ImageTemplateGroup group, Rect region, double confidence) {
+        MatchResult best = MatchResult.notFound();
+        for (ImageTemplate template : group.templates()) {
+            MatchResult result = find(template, region, confidence);
+            if (result.isFound() && (!best.isFound() || result.getConfidence() > best.getConfidence())) {
+                best = result;
+            }
+        }
+        return best;
+    }
+
+    // --- Compare: a "good" template must out-score similar "bad" ones at the same location ---
+
+    /** Padding (px) around a candidate location when re-scoring a competing template there. */
+    private static final int COMPARE_PAD = 4;
+
+    /**
+     * Match {@code good} only if it out-scores {@code bad} at the same location by
+     * {@link ClickConfig#DEFAULT_COMPARE_MARGIN}. Use for two visually-similar templates (e.g. an
+     * active vs. a greyed-out button) where a plain {@code find} would match either.
+     */
+    public static MatchResult findCompare(ImageTemplate good, ImageTemplate bad) {
+        return compare(List.of(good), List.of(bad), CaptureSource.screen(), null,
+                ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
+    }
+
+    /** Match {@code good} only if it beats every distractor in {@code bad} at its location by the default margin. */
+    public static MatchResult findCompare(ImageTemplate good, ImageTemplate... bad) {
+        return compare(List.of(good), List.of(bad), CaptureSource.screen(), null,
+                ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
+    }
+
+    /**
+     * Among the {@code good} templates, return the best-scoring match that still beats every
+     * {@code bad} template at its location by the default margin.
+     */
+    public static MatchResult findCompare(ImageTemplateGroup good, ImageTemplateGroup bad) {
+        return findCompare(good, bad, null, ClickConfig.DEFAULT_COMPARE_MARGIN);
+    }
+
+    public static MatchResult findCompare(ImageTemplateGroup good, ImageTemplateGroup bad, Rect region, double margin) {
+        return compare(good.templates(), bad.templates(), CaptureSource.screen(), region,
+                ClickConfig.DEFAULT_CONFIDENCE, margin);
+    }
+
+    /**
+     * Single-capture compare: find each good template's best match, keep the highest-scoring good
+     * whose location out-scores every bad template (re-scored on the same frame) by {@code margin}.
+     */
+    private static MatchResult compare(List<ImageTemplate> goods, List<ImageTemplate> bads,
+                                       CaptureSource source, Rect region, double confidence, double margin) {
+        Mat background = null;
+        try {
+            BufferedImage screenshot = source.capture();
+            if (screenshot == null) {
+                return MatchResult.notFound();
+            }
+            background = OpencvManager.bufferedImageToMat(screenshot);
+
+            Point origin = source.origin();
+            int offsetX = (region != null ? region.x : 0) + (int) origin.x;
+            int offsetY = (region != null ? region.y : 0) + (int) origin.y;
+
+            MatchResult best = MatchResult.notFound();
+            for (ImageTemplate good : goods) {
+                RawMatch gm = OpencvManager.findBestMatch(good.getMat(), background, false, confidence);
+                if (gm == null) {
+                    continue;
+                }
+                boolean wins = true;
+                for (ImageTemplate bad : bads) {
+                    double badScore = OpencvManager.scoreAround(
+                            bad.getMat(), background, false, gm.x(), gm.y(), COMPARE_PAD);
+                    if (badScore >= gm.score() - margin) {
+                        wins = false;
+                        break;
+                    }
+                }
+                if (wins && (!best.isFound() || gm.score() > best.getConfidence())) {
+                    best = new MatchResult(
+                            new Point(gm.x() + offsetX, gm.y() + offsetY),
+                            gm.width(), gm.height(), gm.score(), good.getId());
+                }
+            }
+            return best;
+        } catch (Exception e) {
+            if (ClickConfig.DEBUG_MODE) {
+                System.err.println("Error in compare: " + e.getMessage());
+                e.printStackTrace();
+            }
+            return MatchResult.notFound();
+        } finally {
+            if (background != null) {
+                background.release();
+            }
+        }
+    }
+
     public static List<MatchResult> findAll(ImageTemplate template) {
         return findAll(template, null, ClickConfig.DEFAULT_CONFIDENCE);
     }

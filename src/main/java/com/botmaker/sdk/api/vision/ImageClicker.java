@@ -52,6 +52,67 @@ public class ImageClicker {
         }
     }
 
+    // --- Group / best / compare clicking ---
+
+    /** Click the first template in {@code group} (in order) that clears the threshold. */
+    public static boolean click(ImageTemplateGroup group) {
+        return clickAny(null, ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
+    }
+
+    public static boolean click(ImageTemplateGroup group, Rect region) {
+        return clickAny(region, ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
+    }
+
+    public static boolean click(ImageTemplateGroup group, Rect region, double confidence) {
+        return clickAny(region, confidence, group.toArray());
+    }
+
+    /** Click the globally highest-scoring match for {@code template}. */
+    public static boolean clickBest(ImageTemplate template) {
+        return clickResult(ImageFinder.findBest(template));
+    }
+
+    /** Click the single highest-scoring match across every template in {@code group}. */
+    public static boolean clickBest(ImageTemplateGroup group) {
+        return clickResult(ImageFinder.findBest(group));
+    }
+
+    /** Click {@code good} only if it out-scores {@code bad} at the same location by the default margin. */
+    public static boolean clickCompare(ImageTemplate good, ImageTemplate bad) {
+        return clickResult(ImageFinder.findCompare(good, bad));
+    }
+
+    /** Click {@code good} only if it beats every distractor in {@code bad} at its location. */
+    public static boolean clickCompare(ImageTemplate good, ImageTemplate... bad) {
+        return clickResult(ImageFinder.findCompare(good, bad));
+    }
+
+    /** Click the best {@code good} template that beats every {@code bad} template at its location. */
+    public static boolean clickCompare(ImageTemplateGroup good, ImageTemplateGroup bad) {
+        return clickResult(ImageFinder.findCompare(good, bad));
+    }
+
+    /** Click a match already located (used by {@code clickBest}/{@code clickCompare}). */
+    private static boolean clickResult(MatchResult result) {
+        if (result.isFound()) {
+            Point clickPoint = ClickConfig.RANDOMIZE_CLICKS ?
+                    result.getRandomClickPoint() :
+                    result.getCenter();
+
+            Mouse.click(clickPoint);
+            Wait.milliseconds(ClickConfig.DEFAULT_FOUND_DELAY);
+
+            if (ClickConfig.DEBUG_MODE) {
+                System.out.println("Clicked " + result.getTemplateId() + " at " + clickPoint +
+                        " (confidence: " + String.format("%.3f", result.getConfidence()) + ")");
+            }
+            return true;
+        } else {
+            Wait.milliseconds(ClickConfig.DEFAULT_NOT_FOUND_DELAY);
+            return false;
+        }
+    }
+
     public static boolean clickAny(ImageTemplate... templates) {
         return clickAny(null, ClickConfig.DEFAULT_CONFIDENCE, templates);
     }

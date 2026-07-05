@@ -94,6 +94,46 @@ public final class OpencvManager {
         }
     }
 
+    /**
+     * Best match score of {@code template} within a small window around the top-left location
+     * {@code (x, y)} in {@code background}. Used by the compare API to measure how well a competing
+     * template matches at a spot another template already matched — on the same captured frame, so
+     * two visually-similar templates can be scored against each other without a second capture.
+     *
+     * <p>The window is the template footprint padded by {@code pad} pixels on each side (clamped to
+     * the background), giving {@code matchTemplate} a little slack for sub-pixel offset. Returns
+     * {@code -1.0} if the (clamped) window is smaller than the template.
+     */
+    public static double scoreAround(Mat template, Mat background, boolean grayscale, int x, int y, int pad) {
+        Mat localTemplate = template.clone();
+        Mat localBackground = background.clone();
+        Mat window = null;
+        Mat resultMat = new Mat();
+        try {
+            normalise(localTemplate, grayscale);
+            normalise(localBackground, grayscale);
+
+            int tw = localTemplate.cols();
+            int th = localTemplate.rows();
+            int x0 = Math.max(0, x - pad);
+            int y0 = Math.max(0, y - pad);
+            int x1 = Math.min(localBackground.cols(), x + tw + pad);
+            int y1 = Math.min(localBackground.rows(), y + th + pad);
+            if (x1 - x0 < tw || y1 - y0 < th) {
+                return -1.0;
+            }
+
+            window = localBackground.submat(new org.opencv.core.Rect(x0, y0, x1 - x0, y1 - y0));
+            matchTemplate(window, localTemplate, resultMat, TM_CCOEFF_NORMED);
+            return Core.minMaxLoc(resultMat).maxVal;
+        } finally {
+            localTemplate.release();
+            if (window != null) window.release();
+            localBackground.release();
+            resultMat.release();
+        }
+    }
+
     public static List<RawMatch> findMultipleMatches(Mat template, Mat background, boolean grayscale) {
         return findMultipleMatches(template, background, grayscale, DEFAULT_CONFIDENCE_THRESHOLD, DEFAULT_OVERLAP_THRESHOLD);
     }

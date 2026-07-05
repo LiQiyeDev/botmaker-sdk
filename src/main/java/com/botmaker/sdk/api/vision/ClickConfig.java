@@ -32,6 +32,14 @@ public class ClickConfig {
     public static double DEFAULT_CONFIDENCE = 0.8;
 
     /**
+     * Default margin the "good" template must beat every "bad" (distractor) template by, at the
+     * same location, for {@link ImageFinder#findCompare}/{@link ImageClicker#clickCompare} to accept
+     * the match. Scores are TM_CCOEFF_NORMED (0.0 to 1.0); a good match of two visually-similar
+     * templates (e.g. active vs. greyed-out) only counts when {@code goodScore - badScore >= margin}.
+     */
+    public static double DEFAULT_COMPARE_MARGIN = 0.05;
+
+    /**
      * Maximum number of retry attempts before giving up.
      * Used by retry-based methods.
      */
@@ -88,6 +96,7 @@ public class ClickConfig {
         DEFAULT_NOT_FOUND_DELAY = 200;
         RANDOMIZE_CLICKS = true;
         DEFAULT_CONFIDENCE = 0.8;
+        DEFAULT_COMPARE_MARGIN = 0.05;
         MAX_RETRY_ATTEMPTS = 20;
         DEBUG_MODE = false;
     }

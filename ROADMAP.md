@@ -8,6 +8,29 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-05 — Multi-template vision: `ImageTemplateGroup`, best-match, compare
+
+**Done**
+- **New value type `ImageTemplateGroup`** (`api.vision`) — immutable, non-empty, ordered wrapper
+  around `List<ImageTemplate>` with `of(ImageTemplate...)` / `of(List)` factories and `toArray()`.
+  Serves as the first-class multi-template value (Studio detects it as a special type → dedicated
+  list picker).
+- **`ImageFinder.find(ImageTemplateGroup)`** (+ region/confidence) — first-match over the group
+  (delegates to `findAny`; keeps cheap short-circuit). Mirror `ImageClicker.click(group)`.
+- **Re-introduced `findBest`/`clickBest`** (previously deleted 2026-07-03) with clearer semantics:
+  exhaustive highest-score match. Overloads for a **single `ImageTemplate`** (returns the global
+  argmax vs. `find`'s first-acceptable) and for an **`ImageTemplateGroup`** (best score across all
+  templates).
+- **`findCompare`/`clickCompare`** — a "good" template must out-score similar "bad" variants (other
+  in-game states of the same element) **at the same location** by `ClickConfig.DEFAULT_COMPARE_MARGIN`
+  (0.05). Overloads: `(good, bad)`, `(good, bad...)`, `(ImageTemplateGroup good, ImageTemplateGroup bad)`
+  (+ region/margin). Single-capture: one screenshot, good located via `findBestMatch`, each bad
+  re-scored in a padded window at good's location via new internal `OpencvManager.scoreAround(...)`.
+- **Tests:** `ImageTemplateGroupTest` (guards/immutability), `ScoreAroundTest` (synthetic
+  good-vs-distractor ranking, self-contained — no fixture image needed).
+
+**Note:** the beta status let us add these to the public `api.vision` surface freely.
+
 ## 2026-07-03 — Vision API simplification
 
 **Done**
