@@ -8,6 +8,26 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-06 — Group/`Any`/`All` variants for the loop & existence helpers
+
+**Done**
+- **Lambda control-flow over an `ImageTemplateGroup`** (`ImageFinder`) — `whileExistsAny`/`ifExistsAny`
+  hand the action the first visible match (`Consumer<MatchResult>`, first-match via `find(group)`);
+  `whileExistsAll`/`ifExistsAll`/`untilExistsAny`/`untilExistsAll` take a `Runnable` ("all present" /
+  "waiting" has no single meaningful match, mirroring `untilExists`). All are one-capture-per-check
+  like the single-template originals.
+- **Group/`All` existence booleans** — `exists(ImageTemplateGroup)` (any, first-match),
+  `existsAll(ImageTemplate...)` and `existsAll(ImageTemplateGroup)` (every one visible; empty input is
+  false), `notExists(ImageTemplateGroup)`. Complements the pre-existing `existsAny(...)`.
+- **`findCompare(good, bad)` Javadoc** now documents `@param good`/`@param bad` (Studio surfaces these
+  as argument labels + the "learn about it" description).
+- All additive — no existing public signature changed. Tests: `ImageFinderGroupTest` (headless-safe
+  `existsAll()` empty guard; screen-dependent paths stay in the manual `Main` harness).
+
+**Deferred / next**
+- `ImageWaiter.waitForAny/waitForAll/waitUntilGone` group overloads (nice-to-have; `ImageClicker`
+  already covers group clicking).
+
 ## 2026-07-05 — Multi-template vision: `ImageTemplateGroup`, best-match, compare
 
 **Done**

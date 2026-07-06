@@ -174,6 +174,9 @@ public class ImageFinder {
      * Match {@code good} only if it out-scores {@code bad} at the same location by
      * {@link ClickConfig#DEFAULT_COMPARE_MARGIN}. Use for two visually-similar templates (e.g. an
      * active vs. a greyed-out button) where a plain {@code find} would match either.
+     *
+     * @param good the template you want to match (the "winner")
+     * @param bad  the look-alike distractor that must NOT out-score {@code good} at the same spot
      */
     public static MatchResult findCompare(ImageTemplate good, ImageTemplate bad) {
         return compare(List.of(good), List.of(bad), CaptureSource.screen(), null,
@@ -334,6 +337,36 @@ public class ImageFinder {
         return findAny(templates).isFound();
     }
 
+    /** True only if <em>every</em> template is currently visible (empty input is false). */
+    public static boolean existsAll(ImageTemplate... templates) {
+        if (templates.length == 0) {
+            return false;
+        }
+        for (ImageTemplate template : templates) {
+            if (!exists(template)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // --- Group existence checks ---
+
+    /** True if <em>any</em> template in {@code group} is currently visible (first-match). */
+    public static boolean exists(ImageTemplateGroup group) {
+        return find(group).isFound();
+    }
+
+    /** True only if <em>every</em> template in {@code group} is currently visible. */
+    public static boolean existsAll(ImageTemplateGroup group) {
+        return existsAll(group.toArray());
+    }
+
+    /** True if <em>no</em> template in {@code group} is currently visible. */
+    public static boolean notExists(ImageTemplateGroup group) {
+        return !exists(group);
+    }
+
     // --- Lambda control-flow: act on the live match, one capture per check ---
 
     /** Run {@code action} once with the match if {@code template} is currently visible. */
@@ -357,6 +390,94 @@ public class ImageFinder {
     /** Keep running {@code action} until {@code template} appears (no match exists while it's absent). */
     public static void untilExists(ImageTemplate template, Runnable action) {
         while (!exists(template)) {
+            action.run();
+        }
+    }
+
+    // --- Lambda control-flow over a group: "Any" (first visible) / "All" (every one visible) ---
+    //
+    // The "Any" variants hand your action the live match (the first template, in order, that clears the
+    // threshold). The "All" variants take a Runnable — "every template is present" has no single
+    // meaningful MatchResult, so there is nothing to hand you (mirrors untilExists' Runnable).
+
+    /**
+     * Run {@code action} once with the first visible match if <em>any</em> template in {@code group}
+     * is currently visible.
+     *
+     * @param group  the templates to look for; the first one found (in order) wins
+     * @param action receives the {@link MatchResult} of the matched template
+     * @return {@code true} if a template was found and {@code action} ran
+     */
+    public static boolean ifExistsAny(ImageTemplateGroup group, Consumer<MatchResult> action) {
+        MatchResult result = find(group);
+        if (result.isFound()) {
+            action.accept(result);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Run {@code action} once if <em>every</em> template in {@code group} is currently visible.
+     *
+     * @param group  the templates that must all be present
+     * @param action runs once when all are visible
+     * @return {@code true} if all were found and {@code action} ran
+     */
+    public static boolean ifExistsAll(ImageTemplateGroup group, Runnable action) {
+        if (existsAll(group)) {
+            action.run();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Keep running {@code action} (with the fresh first match each time) as long as <em>any</em>
+     * template in {@code group} stays visible.
+     *
+     * @param group  the templates to look for; the first one found (in order) wins each iteration
+     * @param action receives the {@link MatchResult} of the matched template on every iteration
+     */
+    public static void whileExistsAny(ImageTemplateGroup group, Consumer<MatchResult> action) {
+        MatchResult result;
+        while ((result = find(group)).isFound()) {
+            action.accept(result);
+        }
+    }
+
+    /**
+     * Keep running {@code action} as long as <em>every</em> template in {@code group} stays visible.
+     *
+     * @param group  the templates that must all remain present
+     * @param action runs once per iteration while all are visible
+     */
+    public static void whileExistsAll(ImageTemplateGroup group, Runnable action) {
+        while (existsAll(group)) {
+            action.run();
+        }
+    }
+
+    /**
+     * Keep running {@code action} until <em>any</em> template in {@code group} appears.
+     *
+     * @param group  the templates to wait for; the loop ends as soon as one is visible
+     * @param action runs once per iteration while none are visible
+     */
+    public static void untilExistsAny(ImageTemplateGroup group, Runnable action) {
+        while (!exists(group)) {
+            action.run();
+        }
+    }
+
+    /**
+     * Keep running {@code action} until <em>every</em> template in {@code group} appears.
+     *
+     * @param group  the templates to wait for; the loop ends once all are visible
+     * @param action runs once per iteration until all are visible
+     */
+    public static void untilExistsAll(ImageTemplateGroup group, Runnable action) {
+        while (!existsAll(group)) {
             action.run();
         }
     }
