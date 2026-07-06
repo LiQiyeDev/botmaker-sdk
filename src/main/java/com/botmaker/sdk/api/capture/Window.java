@@ -2,9 +2,9 @@ package com.botmaker.sdk.api.capture;
 
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
-import com.botmaker.sdk.internal.capture.core.GenericWindow;
-import com.botmaker.sdk.internal.capture.core.NativeController;
-import com.botmaker.sdk.internal.capture.core.NativeControllerFactory;
+import com.botmaker.shared.capture.GenericWindow;
+import com.botmaker.shared.capture.NativeController;
+import com.botmaker.shared.capture.NativeControllerFactory;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;

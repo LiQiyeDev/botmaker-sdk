@@ -1,8 +1,8 @@
 package com.botmaker.sdk.api.interaction;
 
 import com.botmaker.sdk.api.Point;
-import com.botmaker.sdk.internal.capture.core.NativeController;
-import com.botmaker.sdk.internal.capture.core.NativeControllerFactory;
+import com.botmaker.shared.capture.NativeController;
+import com.botmaker.shared.capture.NativeControllerFactory;
 
 public class Mouse {
 

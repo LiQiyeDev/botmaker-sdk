@@ -1,8 +1,8 @@
 package com.botmaker.sdk.internal.capture;
 
-import com.botmaker.sdk.internal.capture.core.GenericWindow;
-import com.botmaker.sdk.internal.capture.core.NativeController;
-import com.botmaker.sdk.internal.capture.core.NativeControllerFactory;
+import com.botmaker.shared.capture.GenericWindow;
+import com.botmaker.shared.capture.NativeController;
+import com.botmaker.shared.capture.NativeControllerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

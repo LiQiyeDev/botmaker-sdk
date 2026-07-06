@@ -23,6 +23,13 @@
     </repositories>
 
     <dependencies>
+        <!-- Shared cross-platform native window plumbing (enumerate / capture / focus / input) -->
+        <dependency>
+            <groupId>com.botmaker.shared</groupId>
+            <artifactId>botmaker-shared</artifactId>
+            <version>0.0.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- JavaCV / OpenCV (native bindings used for image matching) -->
         <dependency>
             <groupId>org.openpnp</groupId>

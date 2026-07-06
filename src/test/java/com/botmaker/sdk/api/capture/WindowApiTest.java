@@ -2,7 +2,7 @@ package com.botmaker.sdk.api.capture;
 
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
-import com.botmaker.sdk.internal.capture.core.NativeControllerFactory;
+import com.botmaker.shared.capture.NativeControllerFactory;
 import com.botmaker.sdk.internal.capture.core.RecordingNativeController;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

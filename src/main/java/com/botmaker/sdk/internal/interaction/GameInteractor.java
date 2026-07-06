@@ -1,9 +1,10 @@
 package com.botmaker.sdk.internal.interaction;
 
 
-import com.botmaker.sdk.internal.capture.Clicker;
 import com.botmaker.sdk.internal.capture.ScreenCapture;
-import com.botmaker.sdk.internal.capture.WindowInfo;
+import com.botmaker.shared.capture.windows.Clicker;
+import com.botmaker.shared.capture.windows.WindowCapture;
+import com.botmaker.shared.capture.windows.WindowInfo;
 import com.botmaker.sdk.internal.emulator.Emulator;
 import com.botmaker.sdk.internal.opencv.OpencvManager;
 import com.botmaker.sdk.internal.opencv.RawMatch;
@@ -37,7 +38,7 @@ public class GameInteractor{
                 screenshot = javax.imageio.ImageIO.read(tempFile);
                 tempFile.delete(); // Clean up the temporary file immediately
             } else if (gameType == GameType.WINDOW && gameWindow != null) {
-                screenshot = ScreenCapture.capture(gameWindow.getHWnd());
+                screenshot = WindowCapture.capture(gameWindow.getHWnd());
             } else if (gameType == GameType.SCREEN) {
                 screenshot = ScreenCapture.captureDesktop();
             }

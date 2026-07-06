@@ -1,8 +1,9 @@
 package com.botmaker.sdk.internal.capture.linux;
 
-import com.botmaker.sdk.internal.capture.core.GenericWindow;
-import com.botmaker.sdk.internal.capture.core.NativeController;
-import com.botmaker.sdk.internal.capture.core.NativeControllerFactory;
+import com.botmaker.shared.capture.GenericWindow;
+import com.botmaker.shared.capture.NativeController;
+import com.botmaker.shared.capture.linux.LinuxController;
+import com.botmaker.shared.capture.NativeControllerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -174,7 +175,7 @@ public class LinuxControllerTest {
 		System.out.println("\n=== Test: Desktop Capture ===");
 
 		long startTime = System.nanoTime();
-		BufferedImage image = controller.captureDesktop();
+		BufferedImage image = com.botmaker.sdk.internal.capture.ScreenCapture.captureDesktop();
 		long captureTime = System.nanoTime() - startTime;
 
 		if (image != null && image.getWidth() > 0 && image.getHeight() > 0) {

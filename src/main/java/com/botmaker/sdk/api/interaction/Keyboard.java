@@ -1,6 +1,6 @@
 package com.botmaker.sdk.api.interaction;
 
-import com.botmaker.sdk.internal.capture.core.NativeControllerFactory;
+import com.botmaker.shared.capture.NativeControllerFactory;
 
 /**
  * Simulated keyboard input. Keys are expressed with the OS-neutral {@link Key} enum; combos and

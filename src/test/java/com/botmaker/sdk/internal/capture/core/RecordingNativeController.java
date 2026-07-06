@@ -1,5 +1,8 @@
 package com.botmaker.sdk.internal.capture.core;
 
+import com.botmaker.shared.capture.GenericWindow;
+import com.botmaker.shared.capture.NativeController;
+
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -24,7 +27,6 @@ public class RecordingNativeController implements NativeController {
         events.add("captureWindow");
         return new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
     }
-    @Override public BufferedImage captureDesktop() { return new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB); }
 
     @Override public void postLeftClick(GenericWindow w, int relativeX, int relativeY) {
         events.add("postLeftClick(" + relativeX + "," + relativeY + ")");
