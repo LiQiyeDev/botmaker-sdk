@@ -15,7 +15,7 @@
         <!-- botmaker-shared version. Default 0.0.0-SNAPSHOT resolves the sibling module in the umbrella
              reactor; the umbrella release.sh bumps this to the released shared tag (e.g. 1.1.0) so a
              JitPack build of this SDK resolves com.github.LiQiyeDev:botmaker-shared:<tag>. -->
-        <botmaker.shared.version>0.0.0-SNAPSHOT</botmaker.shared.version>
+        <botmaker.shared.version>v0.0.1</botmaker.shared.version>
     </properties>
 
     <repositories>
