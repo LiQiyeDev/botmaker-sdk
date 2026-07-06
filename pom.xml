@@ -11,10 +11,21 @@
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <projbect.build.sourceEncoding>UTF-8</projbect.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- botmaker-shared version. Default 0.0.0-SNAPSHOT resolves the sibling module in the umbrella
+             reactor; the umbrella release.sh bumps this to the released shared tag (e.g. 1.1.0) so a
+             JitPack build of this SDK resolves com.github.LiQiyeDev:botmaker-shared:<tag>. -->
+        <botmaker.shared.version>0.0.0-SNAPSHOT</botmaker.shared.version>
     </properties>
 
     <repositories>
+        <!-- JitPack: resolves com.github.LiQiyeDev:botmaker-shared:<tag> when this SDK is built
+             standalone against a released shared (the umbrella reactor resolves the SNAPSHOT locally
+             instead, and JitPack's own build env injects this repo too). -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
         <!-- Google's Maven repo hosts com.android.tools.ddms:ddmlib -->
         <repository>
             <id>google</id>
@@ -23,11 +34,13 @@
     </repositories>
 
     <dependencies>
-        <!-- Shared cross-platform native window plumbing (enumerate / capture / focus / input) -->
+        <!-- Shared cross-platform native window plumbing (enumerate / capture / focus / input).
+             com.github.LiQiyeDev coordinate + version property so this resolves from the umbrella
+             reactor locally and from JitPack when published (see the property comment above). -->
         <dependency>
-            <groupId>com.botmaker.shared</groupId>
+            <groupId>com.github.LiQiyeDev</groupId>
             <artifactId>botmaker-shared</artifactId>
-            <version>0.0.0-SNAPSHOT</version>
+            <version>${botmaker.shared.version}</version>
         </dependency>
 
         <!-- JavaCV / OpenCV (native bindings used for image matching) -->

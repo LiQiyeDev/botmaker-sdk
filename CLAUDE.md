@@ -3,8 +3,9 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 The **BotMaker SDK** is the runtime library that user bots compile against. The sibling
-**BotMaker-Studio** app (`../BotMaker-Studio`) generates user projects that depend on this SDK and
-call its public `com.botmaker.sdk.api.*` facades.
+**botmaker-studio** app (`../botmaker-studio`) generates user projects that depend on this SDK and
+call its public `com.botmaker.sdk.api.*` facades. The SDK itself depends on **botmaker-shared**
+(`../botmaker-shared`, cross-platform native window plumbing).
 
 ## Planning
 
@@ -20,7 +21,8 @@ sessions rely on to understand what changed and what's intentionally left for la
 ```bash
 mvn compile        # Build
 mvn test           # Run tests (JUnit Jupiter)
-mvn install        # Install to the local Maven repo so a local Studio checkout resolves this build
+mvn install        # Install to the local Maven repo (umbrella coordinate); for a generated bot to pick
+                   #   up local changes use ./dev-install.sh instead (see Publishing › Local dev)
 ```
 
 Demo / manual entry points (run from the IDE): `com.botmaker.sdk.Main` (smoke-tests the public find
@@ -29,10 +31,21 @@ classes are manual `main`-method harnesses, not JUnit tests.
 
 ## Publishing
 
-The SDK is consumed by Studio via JitPack as `com.github.LiQiyeDev:BotMaker-sdk:0.0.0-SNAPSHOT`.
-**The maintainer owns the SDK → JitPack publish — don't push or publish the SDK yourself.** For
-testing local SDK changes against a local Studio checkout, run `mvn install` here (the local Maven
-repo is checked before JitPack).
+The SDK is consumed by the **bot projects that Studio generates** (not by Studio itself), via JitPack as
+`com.github.LiQiyeDev:botmaker-sdk:<tag>`. JitPack builds each git tag on demand and serves it under that
+`com.github.LiQiyeDev` coordinate regardless of this pom's `groupId`/`version` (so the pom `version` is
+cosmetic). **The maintainer owns the SDK → JitPack publish — don't push or publish the SDK yourself;**
+releases are cut from the umbrella with `../release.sh`.
+
+### Local dev (test SDK changes without pushing a tag)
+
+A generated bot pins `com.github.LiQiyeDev:botmaker-sdk:<version>`, and the local `~/.m2` is checked before
+JitPack — but a plain `mvn install` here installs under `com.botmaker.sdk:botmaker-sdk`, the *wrong*
+coordinate, so a bot won't pick it up. Run **`./dev-install.sh`** instead: it installs this build into your
+local `~/.m2` as `com.github.LiQiyeDev:botmaker-sdk:local-SNAPSHOT` (plus `botmaker-shared` if changed). Then
+set the bot's SDK version to `local-SNAPSHOT` (the version field in Studio's project screen is editable). Your
+bot resolves the local build first; JitPack is the fallback. Users pick real released versions and never have
+`local-SNAPSHOT`, so they're unaffected.
 
 ## Code Style
 
