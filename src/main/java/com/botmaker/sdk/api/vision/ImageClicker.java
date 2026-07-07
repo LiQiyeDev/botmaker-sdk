@@ -4,6 +4,9 @@ import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
 import com.botmaker.sdk.api.interaction.Mouse;
 import com.botmaker.sdk.api.interaction.Wait;
+import com.botmaker.sdk.api.observe.Bots;
+import com.botmaker.sdk.api.observe.ClickEvent;
+import com.botmaker.sdk.api.observe.Surface;
 
 import java.util.List;
 
@@ -33,6 +36,7 @@ public class ImageClicker {
                     result.getCenter();
 
             Mouse.click(clickPoint);
+            emitClick(clickPoint);
             Wait.milliseconds(delayMs > 0 ? delayMs : ClickConfig.DEFAULT_FOUND_DELAY);
 
             if (ClickConfig.DEBUG_MODE) {
@@ -100,6 +104,7 @@ public class ImageClicker {
                     result.getCenter();
 
             Mouse.click(clickPoint);
+            emitClick(clickPoint);
             Wait.milliseconds(ClickConfig.DEFAULT_FOUND_DELAY);
 
             if (ClickConfig.DEBUG_MODE) {
@@ -147,6 +152,7 @@ public class ImageClicker {
                     match.getCenter();
 
             Mouse.click(clickPoint);
+            emitClick(clickPoint);
             Wait.milliseconds(ClickConfig.DEFAULT_FOUND_DELAY);
         }
 
@@ -155,5 +161,16 @@ public class ImageClicker {
         }
 
         return matches.size();
+    }
+
+    /**
+     * Reports a left click to registered {@link BotObserver}s (see {@code api.observe.Bots}). The
+     * template-click helpers always left-click at an absolute screen coordinate. Guarded by
+     * {@code hasObservers()} so a normal bot run pays nothing.
+     */
+    private static void emitClick(Point clickPoint) {
+        if (Bots.hasObservers()) {
+            Bots.fireClick(new ClickEvent(Surface.ofScreen(), clickPoint, ClickEvent.LEFT));
+        }
     }
 }

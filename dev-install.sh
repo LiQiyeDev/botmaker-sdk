@@ -12,8 +12,9 @@
 #   ./dev-install.sh                 # install as com.github.LiQiyeDev:botmaker-sdk:local-SNAPSHOT
 #   DEV_SDK_VERSION=mine ./dev-install.sh   # override the dev version label
 #
-# Then, in Studio's project screen, type the dev version (default `local-SNAPSHOT`) into the SDK
-# version field. Your bot resolves the local build first; JitPack stays the fallback. Users select real
+# Then, in Studio, pick the dev version (default `local-SNAPSHOT`) from the SDK version dropdown — Studio
+# auto-lists locally-installed SNAPSHOT builds at the top (New Project and Manage Libraries), so there's
+# nothing to type. Your bot resolves the local build first; JitPack stays the fallback. Users select real
 # released versions and never have this in their ~/.m2, so they are unaffected.
 
 set -euo pipefail
@@ -39,8 +40,15 @@ trap 'mv -f "$SDK_DIR/pom.xml.devbak" "$SDK_DIR/pom.xml"' EXIT
 sed -i 's#<groupId>com.botmaker.sdk</groupId>#<groupId>com.github.LiQiyeDev</groupId>#' "$SDK_DIR/pom.xml"
 sed -i "s#<version>0.0.0-SNAPSHOT</version>#<version>${DEV_VERSION}</version>#"        "$SDK_DIR/pom.xml"
 
+# Point the shared dep at the local reactor SNAPSHOT (installed just above), regardless of what the
+# committed pom pins botmaker.shared.version to — after a release it's a real tag (e.g. v0.0.2), which
+# would make this dev build pull shared from JitPack instead of your freshly dev-installed local build.
+# Restored with the rest of the pom by the EXIT trap.
+sed -i 's#<botmaker.shared.version>[^<]*</botmaker.shared.version>#<botmaker.shared.version>0.0.0-SNAPSHOT</botmaker.shared.version>#' "$SDK_DIR/pom.xml"
+
 mvn -q -f "$SDK_DIR/pom.xml" install -DskipTests   # installs the jar + attached sources jar
 
 echo
-echo "Done. In Studio's SDK version field enter:  $DEV_VERSION"
+echo "Done. In Studio, pick '$DEV_VERSION' from the SDK version dropdown — it's auto-listed at the top"
+echo "when a local build is installed (New Project, or Project > Manage Libraries), so no typing needed."
 echo "(installed at ~/.m2/repository/com/github/LiQiyeDev/botmaker-sdk/$DEV_VERSION/)"

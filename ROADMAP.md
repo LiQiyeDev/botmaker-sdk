@@ -8,6 +8,38 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-07 — Observer SPI + Studio telemetry bridge
+
+**Done**
+- **New public, Studio-agnostic observability SPI** (`com.botmaker.sdk.api.observe`): `BotObserver`
+  (default no-op `onMatch`/`onClick`), event records `MatchEvent`/`ClickEvent`, a `Surface` target
+  (window title+bounds, or screen; `Surface.of(CaptureSource)` resolves it), and the `Bots` registry
+  (copy-on-write `add/removeObserver`, `hasObservers`, `fireMatch`/`fireClick`). A first-class feature
+  usable standalone — log actions, assert on them in tests, drive custom tooling. `Bots` is the one bit
+  of static facade state (a deliberate, documented exception to the stateless-dispatcher style).
+- **Emit sites** in the vision/interaction facades, each guarded by `Bots.hasObservers()` so a normal run
+  builds/pays nothing: `ImageFinder.find(...)` (found + not-found), private `compare(...)`, `findAll(...)`
+  (one event per match, or a not-found), and `ImageClicker.click`/`clickResult`/`clickAll` (left-click).
+- **Internal, env-gated Studio bridge** `internal/observe/IpcObserver`: translates SDK events →
+  `com.botmaker.shared.ipc.TelemetryEvent` and ships them via `TelemetryClient.fromEnvironment()`. It
+  self-installs only when `BM_IPC_PORT` is set (Studio-launched). `Bots` loads it *by name* in a static
+  block, so the public API keeps zero compile-time dependency on the bridge/socket — a bot never needs
+  the Studio, and outside it no observer registers and no socket opens.
+- Tests: `api/observe/BotsTest` (registration, fan-out, error isolation, `Surface`). Real end-to-end
+  (find→click overlays) is validated with the Studio's stub bot.
+- **`dev-install.sh` now routes a local SDK build to the local `botmaker-shared` build.** It rewrites
+  `botmaker.shared.version` → `0.0.0-SNAPSHOT` in the temporary pom (restored on exit), alongside the
+  existing groupId/version rewrites. Without this, once a release pins the property to a real tag (e.g.
+  `v0.0.2`) a `local-SNAPSHOT` SDK build silently pulled shared from JitPack, so local shared changes were
+  ignored. Studio also now auto-lists the installed `local-SNAPSHOT` in its version dropdown (see Studio
+  ROADMAP), so there's nothing to type.
+
+**Deferred / next**
+- Optional raw `Mouse.click` (bare point, no template context) click events — left out for now.
+- The SDK pom still pins `botmaker.shared.version` to the released tag; the umbrella `release.sh` bumps it
+  to the new shared tag that carries the `ipc` package when this ships. For local dev build with
+  `-Dbotmaker.shared.version=0.0.0-SNAPSHOT` after `botmaker-shared/dev-install.sh`.
+
 ## 2026-07-06 — Group/`Any`/`All` variants for the loop & existence helpers
 
 **Done**

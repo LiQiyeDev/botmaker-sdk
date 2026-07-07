@@ -41,11 +41,17 @@ releases are cut from the umbrella with `../release.sh`.
 
 A generated bot pins `com.github.LiQiyeDev:botmaker-sdk:<version>`, and the local `~/.m2` is checked before
 JitPack — but a plain `mvn install` here installs under `com.botmaker.sdk:botmaker-sdk`, the *wrong*
-coordinate, so a bot won't pick it up. Run **`./dev-install.sh`** instead: it installs this build into your
-local `~/.m2` as `com.github.LiQiyeDev:botmaker-sdk:local-SNAPSHOT` (plus `botmaker-shared` if changed). Then
-set the bot's SDK version to `local-SNAPSHOT` (the version field in Studio's project screen is editable). Your
-bot resolves the local build first; JitPack is the fallback. Users pick real released versions and never have
-`local-SNAPSHOT`, so they're unaffected.
+coordinate, so a bot won't pick it up. Run **`./dev-install.sh`** instead (or the umbrella `../dev-install.sh`
+to do shared + sdk together): it reinstalls `botmaker-shared` at `0.0.0-SNAPSHOT`, then installs this build
+into `~/.m2` as `com.github.LiQiyeDev:botmaker-sdk:local-SNAPSHOT`. It also rewrites `botmaker.shared.version`
+→ `0.0.0-SNAPSHOT` in its temporary pom (restored on exit) so the local SDK build depends on that **local**
+shared build — without this, once a release pins the property to a real tag (e.g. `v0.0.2`) your local shared
+changes would be silently ignored.
+
+You no longer type the version into Studio: it auto-lists locally-installed `*-SNAPSHOT` SDK builds at the top
+of the SDK version dropdown (New Project and Project ▸ Manage Libraries), labeled `(local build)` and
+preselected. Your bot resolves the local build first; JitPack is the fallback. Users pick real released
+versions and never have `local-SNAPSHOT`, so they're unaffected.
 
 ## Code Style
 

@@ -3,6 +3,9 @@ package com.botmaker.sdk.api.vision;
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
 import com.botmaker.sdk.api.capture.CaptureSource;
+import com.botmaker.sdk.api.observe.Bots;
+import com.botmaker.sdk.api.observe.MatchEvent;
+import com.botmaker.sdk.api.observe.Surface;
 import com.botmaker.sdk.internal.opencv.OpencvManager;
 import com.botmaker.sdk.internal.opencv.RawMatch;
 import org.opencv.core.Mat;
@@ -71,16 +74,20 @@ public class ImageFinder {
 
                 Point location = new Point(match.x() + offsetX, match.y() + offsetY);
 
-                return new MatchResult(
+                MatchResult result = new MatchResult(
                         location,
                         match.width(),
                         match.height(),
                         match.score(),
                         template.getId()
                 );
+                emitMatch(source, region, result);
+                return result;
             }
 
-            return MatchResult.notFound();
+            MatchResult notFound = MatchResult.notFound();
+            emitMatch(source, region, notFound);
+            return notFound;
 
         } catch (Exception e) {
             if (ClickConfig.DEBUG_MODE) {
@@ -241,6 +248,7 @@ public class ImageFinder {
                             gm.width(), gm.height(), gm.score(), good.getId());
                 }
             }
+            emitMatch(source, region, best);
             return best;
         } catch (Exception e) {
             if (ClickConfig.DEBUG_MODE) {
@@ -285,7 +293,7 @@ public class ImageFinder {
             int offsetX = (region != null ? region.x : 0) + (int) origin.x;
             int offsetY = (region != null ? region.y : 0) + (int) origin.y;
 
-            return matches.stream()
+            List<MatchResult> results = matches.stream()
                     .map(r -> {
                         Point location = new Point(r.x() + offsetX, r.y() + offsetY);
                         return new MatchResult(
@@ -298,6 +306,9 @@ public class ImageFinder {
                     })
                     .collect(Collectors.toList());
 
+            emitMatches(source, region, results);
+            return results;
+
         } catch (Exception e) {
             if (ClickConfig.DEBUG_MODE) {
                 System.err.println("Error in findAll: " + e.getMessage());
@@ -308,6 +319,27 @@ public class ImageFinder {
             if (background != null) {
                 background.release();
             }
+        }
+    }
+
+    // --- Observability: report each match attempt to registered BotObservers (see api.observe.Bots) ---
+    // Guarded by hasObservers() so a normal bot run (no observer) builds nothing and pays nothing.
+
+    private static void emitMatch(CaptureSource source, Rect region, MatchResult result) {
+        if (Bots.hasObservers()) {
+            Bots.fireMatch(new MatchEvent(Surface.of(source), region, result));
+        }
+    }
+
+    private static void emitMatches(CaptureSource source, Rect region, List<MatchResult> results) {
+        if (!Bots.hasObservers()) return;
+        Surface surface = Surface.of(source);
+        if (results.isEmpty()) {
+            Bots.fireMatch(new MatchEvent(surface, region, MatchResult.notFound()));
+            return;
+        }
+        for (MatchResult result : results) {
+            Bots.fireMatch(new MatchEvent(surface, region, result));
         }
     }
 
