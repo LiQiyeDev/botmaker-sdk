@@ -24,6 +24,27 @@ public class Screen {
     }
 
     /**
+     * A single monitor (0-based {@code index} into the OS screen-device list) as a {@link CaptureSource},
+     * so a bot can match against just one screen on a multi-monitor desktop. In-image match coordinates are
+     * converted to absolute, clickable coordinates by adding {@link CaptureSource#origin()} (the monitor's
+     * top-left in virtual-screen space). An out-of-range index falls back to the whole desktop.
+     */
+    public static CaptureSource at(int index) {
+        return new CaptureSource() {
+            @Override
+            public BufferedImage capture() {
+                return ScreenCapture.captureMonitor(index);
+            }
+
+            @Override
+            public Point origin() {
+                java.awt.Rectangle b = ScreenCapture.monitorBounds(index);
+                return new Point(b.x, b.y);
+            }
+        };
+    }
+
+    /**
      * The whole desktop as a {@link CaptureSource}, so matchers can treat the screen and a
      * {@link Window} uniformly. Delegates to {@link #capture()} / {@link #captureOrigin()}.
      */

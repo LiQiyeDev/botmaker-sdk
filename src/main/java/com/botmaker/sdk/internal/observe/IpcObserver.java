@@ -68,14 +68,32 @@ public final class IpcObserver implements BotObserver {
         TelemetryEvent.Rect matched = found ? rect(result.getRect()) : null;
         double confidence = result != null ? result.getConfidence() : 0.0;
         return new TelemetryEvent.Match(
-                target(event.surface()), rect(event.region()), matched, confidence, found);
+                target(event.surface()), rect(event.region()), matched, confidence, found, botLine());
     }
 
     private static TelemetryEvent toTelemetry(ClickEvent event) {
         return new TelemetryEvent.Click(
                 target(event.surface()),
                 (int) event.point().x, (int) event.point().y,
-                event.button());
+                event.button(), botLine());
+    }
+
+    /**
+     * The 1-based source line of the <em>bot's</em> code that triggered this event, or {@code -1}. Found by
+     * walking the current stack for the first frame that is neither SDK/shared plumbing nor JDK internals —
+     * i.e. the user's own bot class — so the Studio can highlight the running block during a plain run.
+     */
+    private static int botLine() {
+        for (StackTraceElement f : Thread.currentThread().getStackTrace()) {
+            String cn = f.getClassName();
+            if (cn.startsWith("com.botmaker.") || cn.startsWith("java.") || cn.startsWith("javax.")
+                    || cn.startsWith("jdk.") || cn.startsWith("sun.") || cn.equals("java.lang.Thread")) {
+                continue;
+            }
+            int line = f.getLineNumber();
+            if (line > 0) return line;
+        }
+        return -1;
     }
 
     private static TelemetryEvent.Target target(Surface surface) {

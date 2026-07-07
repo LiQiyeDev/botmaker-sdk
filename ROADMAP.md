@@ -8,6 +8,28 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-08 — Telemetry carries the bot source line
+
+**Done**
+- `internal/observe/IpcObserver` now stamps each `Match`/`Click` telemetry event with the bot's source line
+  (`botLine()` walks the current stack for the first non-`com.botmaker.*`/non-JDK frame — the user's bot
+  class). Uses the shared wire v2 field (see `../botmaker-shared/ROADMAP.md`). Enables the Studio's
+  running-block highlight on a plain run. Additive; a bot with no Studio attached still registers no observer.
+
+## 2026-07-07 — Per-monitor CaptureSource (`Screen.at`)
+
+**Done**
+- **`Screen.at(int index)`** — a new public `CaptureSource` for a single monitor (0-based index into the OS
+  screen-device list), so a bot can match against just one screen on a multi-monitor desktop instead of the
+  whole virtual desktop (`CaptureSource.screen()` / `Screen.asSource()`). `origin()` is the monitor's
+  top-left in virtual-screen space, so in-image matches convert to absolute clickable coordinates as usual.
+- **`internal/capture/ScreenCapture`** gained `monitorBounds(int)` (AWT device bounds, falls back to the
+  virtual desktop for an out-of-range index) and `captureMonitor(int)` (crops the single `captureDesktop()`
+  grab to those bounds — one backend selection, no second capture path).
+- Consumed by the Studio's generated `BotConfig.screen(index)` helper (capture-source picker → block code).
+  Additive only; no existing public signature changed. Released bots need this SDK version for a
+  specific-screen block; local dev picks it up via `./dev-install.sh`.
+
 ## 2026-07-07 — Observer SPI + Studio telemetry bridge
 
 **Done**
