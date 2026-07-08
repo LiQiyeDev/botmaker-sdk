@@ -12,10 +12,11 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- botmaker-shared version. Default 0.0.0-SNAPSHOT resolves the sibling module in the umbrella
-             reactor; the umbrella release.sh bumps this to the released shared tag (e.g. 1.1.0) so a
-             JitPack build of this SDK resolves com.github.LiQiyeDev:botmaker-shared:<tag>. -->
-        <botmaker.shared.version>v0.0.4</botmaker.shared.version>
+        <!-- botmaker-shared version. Committed value is ALWAYS 0.0.0-SNAPSHOT: it resolves the sibling
+             module in the umbrella reactor / dev-install. The real released shared tag is injected only at
+             build time by CI (jitpack.yml) via -Dbotmaker.shared.version=<tag> — never committed here, so a
+             clean checkout matches the reactor/dev value and there is no stale pin to get out of sync. -->
+        <botmaker.shared.version>0.0.0-SNAPSHOT</botmaker.shared.version>
     </properties>
 
     <repositories>

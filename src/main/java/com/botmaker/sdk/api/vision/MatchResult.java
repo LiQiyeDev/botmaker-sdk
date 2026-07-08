@@ -24,17 +24,27 @@ public class MatchResult {
         this.templateId = templateId;
     }
 
-    private MatchResult() {
+    private MatchResult(double confidence) {
         this.location = new Point(0, 0);
         this.width = 0;
         this.height = 0;
-        this.confidence = 0.0;
+        this.confidence = confidence;
         this.found = false;
         this.templateId = null;
     }
 
     static MatchResult notFound() {
-        return new MatchResult();
+        return new MatchResult(0.0);
+    }
+
+    /**
+     * A not-found result that still carries the best (below-threshold) score observed. Intended for telemetry
+     * so an observer can show a real near-miss confidence instead of {@code 0}; {@link #isFound()} is still
+     * {@code false} and {@link #getCenter()}/click points still return {@code null}, so the public
+     * find contract is unchanged.
+     */
+    static MatchResult miss(double bestScore) {
+        return new MatchResult(bestScore);
     }
 
     public boolean isFound() {

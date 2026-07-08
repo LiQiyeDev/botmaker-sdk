@@ -56,20 +56,22 @@ public class ImageFinder {
             }
             background = OpencvManager.bufferedImageToMat(screenshot);
 
-            RawMatch match = OpencvManager.findBestMatch(template.getMat(), background, false, confidence);
+            // Get the raw best match (below-threshold included) so a miss can still report its real score.
+            RawMatch best = OpencvManager.findBest(template.getMat(), background, false);
 
-            if (match != null) {
+            if (best != null && best.score() >= confidence) {
                 Point origin = source.origin();
-                Point location = new Point(match.x() + origin.x, match.y() + origin.y);
+                Point location = new Point(best.x() + origin.x, best.y() + origin.y);
                 MatchResult result = new MatchResult(
-                        location, match.width(), match.height(), match.score(), template.getId());
+                        location, best.width(), best.height(), best.score(), template.getId());
                 emitMatch(source, result);
                 return result;
             }
 
-            MatchResult notFound = MatchResult.notFound();
-            emitMatch(source, notFound);
-            return notFound;
+            // Miss: emit telemetry carrying the best near-miss score (so the dashboard shows why it's
+            // borderline), but return the plain not-found result to keep the public find contract unchanged.
+            emitMatch(source, MatchResult.miss(best != null ? best.score() : 0.0));
+            return MatchResult.notFound();
 
         } catch (Exception e) {
             if (ClickConfig.DEBUG_MODE) {

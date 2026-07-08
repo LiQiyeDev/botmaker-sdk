@@ -67,6 +67,17 @@ public final class OpencvManager {
      * {@code confidenceThreshold}, or {@code null} if none qualifies.
      */
     public static RawMatch findBestMatch(Mat template, Mat background, boolean grayscale, double confidenceThreshold) {
+        RawMatch best = findBest(template, background, grayscale);
+        return (best != null && best.score() >= confidenceThreshold) ? best : null;
+    }
+
+    /**
+     * Returns the single best match of {@code template} within {@code background} <em>regardless</em> of any
+     * confidence threshold ({@code score} is the raw {@code TM_CCOEFF_NORMED} peak), or {@code null} only when
+     * the template can't fit the background. Callers that need a threshold gate use {@link #findBestMatch};
+     * telemetry uses this so a miss can still report the real near-miss score instead of zero.
+     */
+    public static RawMatch findBest(Mat template, Mat background, boolean grayscale) {
         Mat localTemplate = template.clone();
         Mat localBackground = background.clone();
         Mat resultMat = new Mat();
@@ -81,10 +92,6 @@ public final class OpencvManager {
 
             matchTemplate(localBackground, localTemplate, resultMat, TM_CCOEFF_NORMED);
             Core.MinMaxLocResult mmr = Core.minMaxLoc(resultMat);
-
-            if (mmr.maxVal < confidenceThreshold) {
-                return null;
-            }
             Point loc = mmr.maxLoc;
             return new RawMatch((int) loc.x, (int) loc.y, localTemplate.cols(), localTemplate.rows(), mmr.maxVal);
         } finally {

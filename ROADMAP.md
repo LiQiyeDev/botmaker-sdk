@@ -8,6 +8,22 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-08 — Report best score on a template-match miss + SNAPSHOT shared pin
+
+**Done**
+- **Confidence is no longer always `0` on a miss.** `OpencvManager` split into `findBest(...)` (returns the top
+  `TM_CCOEFF_NORMED` peak regardless of threshold; `null` only when the template can't fit) and
+  `findBestMatch(...,threshold)` (unchanged gate, delegates to `findBest`). `ImageFinder.find` emits
+  `MatchResult.miss(bestScore)` on a below-threshold miss so the telemetry Match carries the real near-miss
+  confidence (e.g. `0.77`) — explaining "detected half the time" as a score straddling the threshold. The public
+  find contract is unchanged (`isFound()` still `false`, click points still `null`); no telemetry wire change.
+- **`botmaker.shared.version` committed value is now `0.0.0-SNAPSHOT`** (was a pinned tag). The real shared tag
+  is resolved and injected at build time by `jitpack.yml` (`-Dbotmaker.shared.version=<newest v* tag>`); the
+  committed pom is never edited by `release.sh`.
+
+**Deferred / next**
+- Consider surfacing the near-miss best score on the public API (today it's telemetry-only via `MatchResult.miss`).
+
 ## 2026-07-08 — CaptureSource redesign: three kinds, region-as-modifier, full method coverage
 
 **Done**
