@@ -513,4 +513,219 @@ public class ImageFinder {
             action.run();
         }
     }
+
+    // =====================================================================================
+    // CaptureSource-targeted overloads (full coverage)
+    //
+    // Every matcher above has a whole-desktop default; these mirror the entire family with an
+    // explicit CaptureSource, so any find/exists/click-adjacent block can be pinned to a window
+    // or a single monitor. Each delegates to the source-aware cores already used internally
+    // (find(t, source, region, conf), findAll(t, source, region, conf), compare(...)), so match
+    // coordinates are still returned in absolute, clickable screen space.
+    // =====================================================================================
+
+    // --- find (single template) ---
+
+    public static MatchResult find(ImageTemplate template, CaptureSource source, Rect region) {
+        return find(template, source, region, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    // --- findAll ---
+
+    public static List<MatchResult> findAll(ImageTemplate template, CaptureSource source) {
+        return findAll(template, source, null, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static List<MatchResult> findAll(ImageTemplate template, CaptureSource source, Rect region) {
+        return findAll(template, source, region, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    // --- findAny ---
+
+    public static MatchResult findAny(CaptureSource source, ImageTemplate... templates) {
+        return findAny(source, null, ClickConfig.DEFAULT_CONFIDENCE, templates);
+    }
+
+    public static MatchResult findAny(CaptureSource source, Rect region, double confidence, ImageTemplate... templates) {
+        for (ImageTemplate template : templates) {
+            MatchResult result = find(template, source, region, confidence);
+            if (result.isFound()) {
+                return result;
+            }
+        }
+        return MatchResult.notFound();
+    }
+
+    // --- group find ---
+
+    public static MatchResult find(ImageTemplateGroup group, CaptureSource source) {
+        return findAny(source, null, ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
+    }
+
+    public static MatchResult find(ImageTemplateGroup group, CaptureSource source, Rect region, double confidence) {
+        return findAny(source, region, confidence, group.toArray());
+    }
+
+    // --- findBest ---
+
+    public static MatchResult findBest(ImageTemplate template, CaptureSource source) {
+        return find(template, source, null, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static MatchResult findBest(ImageTemplate template, CaptureSource source, Rect region, double confidence) {
+        return find(template, source, region, confidence);
+    }
+
+    public static MatchResult findBest(ImageTemplateGroup group, CaptureSource source) {
+        return findBest(group, source, null, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static MatchResult findBest(ImageTemplateGroup group, CaptureSource source, Rect region, double confidence) {
+        MatchResult best = MatchResult.notFound();
+        for (ImageTemplate template : group.templates()) {
+            MatchResult result = find(template, source, region, confidence);
+            if (result.isFound() && (!best.isFound() || result.getConfidence() > best.getConfidence())) {
+                best = result;
+            }
+        }
+        return best;
+    }
+
+    // --- findCompare ---
+
+    public static MatchResult findCompare(ImageTemplate good, ImageTemplate bad, CaptureSource source) {
+        return compare(List.of(good), List.of(bad), source, null,
+                ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
+    }
+
+    public static MatchResult findCompare(ImageTemplate good, CaptureSource source, ImageTemplate... bad) {
+        return compare(List.of(good), List.of(bad), source, null,
+                ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
+    }
+
+    public static MatchResult findCompare(ImageTemplateGroup good, ImageTemplateGroup bad, CaptureSource source) {
+        return findCompare(good, bad, source, null, ClickConfig.DEFAULT_COMPARE_MARGIN);
+    }
+
+    public static MatchResult findCompare(ImageTemplateGroup good, ImageTemplateGroup bad, CaptureSource source,
+                                          Rect region, double margin) {
+        return compare(good.templates(), bad.templates(), source, region,
+                ClickConfig.DEFAULT_CONFIDENCE, margin);
+    }
+
+    // --- existence checks ---
+
+    public static boolean exists(ImageTemplate template, CaptureSource source) {
+        return find(template, source).isFound();
+    }
+
+    public static boolean exists(ImageTemplate template, CaptureSource source, Rect region) {
+        return find(template, source, region).isFound();
+    }
+
+    public static boolean exists(ImageTemplate template, CaptureSource source, double confidence) {
+        return find(template, source, confidence).isFound();
+    }
+
+    public static boolean notExists(ImageTemplate template, CaptureSource source) {
+        return !exists(template, source);
+    }
+
+    public static boolean existsAny(CaptureSource source, ImageTemplate... templates) {
+        return findAny(source, templates).isFound();
+    }
+
+    public static boolean existsAll(CaptureSource source, ImageTemplate... templates) {
+        if (templates.length == 0) {
+            return false;
+        }
+        for (ImageTemplate template : templates) {
+            if (!exists(template, source)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // --- group existence checks ---
+
+    public static boolean exists(ImageTemplateGroup group, CaptureSource source) {
+        return find(group, source).isFound();
+    }
+
+    public static boolean existsAll(ImageTemplateGroup group, CaptureSource source) {
+        return existsAll(source, group.toArray());
+    }
+
+    public static boolean notExists(ImageTemplateGroup group, CaptureSource source) {
+        return !exists(group, source);
+    }
+
+    // --- lambda control-flow (single template) ---
+
+    public static boolean ifExists(ImageTemplate template, CaptureSource source, Consumer<MatchResult> action) {
+        MatchResult result = find(template, source);
+        if (result.isFound()) {
+            action.accept(result);
+            return true;
+        }
+        return false;
+    }
+
+    public static void whileExists(ImageTemplate template, CaptureSource source, Consumer<MatchResult> action) {
+        MatchResult result;
+        while ((result = find(template, source)).isFound()) {
+            action.accept(result);
+        }
+    }
+
+    public static void untilExists(ImageTemplate template, CaptureSource source, Runnable action) {
+        while (!exists(template, source)) {
+            action.run();
+        }
+    }
+
+    // --- lambda control-flow over a group ---
+
+    public static boolean ifExistsAny(ImageTemplateGroup group, CaptureSource source, Consumer<MatchResult> action) {
+        MatchResult result = find(group, source);
+        if (result.isFound()) {
+            action.accept(result);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean ifExistsAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
+        if (existsAll(group, source)) {
+            action.run();
+            return true;
+        }
+        return false;
+    }
+
+    public static void whileExistsAny(ImageTemplateGroup group, CaptureSource source, Consumer<MatchResult> action) {
+        MatchResult result;
+        while ((result = find(group, source)).isFound()) {
+            action.accept(result);
+        }
+    }
+
+    public static void whileExistsAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
+        while (existsAll(group, source)) {
+            action.run();
+        }
+    }
+
+    public static void untilExistsAny(ImageTemplateGroup group, CaptureSource source, Runnable action) {
+        while (!exists(group, source)) {
+            action.run();
+        }
+    }
+
+    public static void untilExistsAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
+        while (!existsAll(group, source)) {
+            action.run();
+        }
+    }
 }

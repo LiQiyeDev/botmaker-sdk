@@ -8,6 +8,23 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-08 — Full CaptureSource overload coverage + `CaptureSource.window`
+
+**Done**
+- **`CaptureSource.window(String titleSubstring)`** — new static factory returning the first window whose
+  title contains the substring as a `CaptureSource`, or the whole `screen()` if none matches (unwraps the
+  `Window.find` `Optional` in one call). Studio now emits this inline instead of a generated `BotConfig`
+  helper (the `BotConfig.java` sidecar was dropped Studio-side).
+- **`ImageFinder` — CaptureSource-targeted overloads for the whole family**: `findAll`, `findAny`, group
+  `find`, `findBest` (single + group), `findCompare` (single/varargs/group), `exists`/`notExists`/`existsAny`
+  /`existsAll` (single + group), and the `if`/`while`/`untilExists*` lambda control-flow (single + group).
+  Previously only `find`/`findAll` accepted a source. All additive, routed through the existing source-aware
+  cores (`find(t,source,region,conf)`, `findAll(...)`, `compare(...)`), so coordinates stay absolute.
+- **`ImageClicker` / `ImageWaiter`** — matching source overloads for `click`/`clickBest`/`clickAny`/`clickAll`
+  and `waitFor`/`waitUntilGone`/`waitAndClick`, so a targeted window/monitor can drive click + wait blocks too.
+- No existing public signature changed. Released bots need this SDK version to use the new source overloads;
+  Studio's capture-source picker now attaches to every `CaptureSource`/`Window` parameter across these.
+
 ## 2026-07-08 — Telemetry carries the bot source line
 
 **Done**

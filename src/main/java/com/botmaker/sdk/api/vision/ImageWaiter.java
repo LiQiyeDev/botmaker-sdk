@@ -2,6 +2,7 @@ package com.botmaker.sdk.api.vision;
 
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
+import com.botmaker.sdk.api.capture.CaptureSource;
 import com.botmaker.sdk.api.interaction.Mouse;
 import com.botmaker.sdk.api.interaction.Wait;
 
@@ -89,6 +90,57 @@ public class ImageWaiter {
             return true;
         }
 
+        return false;
+    }
+
+    // =====================================================================================
+    // CaptureSource-targeted overloads: poll a specific window / monitor rather than the whole
+    // desktop. Mirrors the screen-default family; matches are returned in absolute coordinates.
+    // =====================================================================================
+
+    public static MatchResult waitFor(ImageTemplate template, CaptureSource source, int timeoutSeconds) {
+        return waitFor(template, source, null, timeoutSeconds, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static MatchResult waitFor(ImageTemplate template, CaptureSource source, Rect region,
+                                      int timeoutSeconds, double confidence) {
+        long startTime = System.currentTimeMillis();
+        long timeoutMs = timeoutSeconds * 1000L;
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            MatchResult result = find(template, source, region, confidence);
+            if (result.isFound()) {
+                return result;
+            }
+            Wait.milliseconds(100);
+        }
+        return MatchResult.notFound();
+    }
+
+    public static boolean waitUntilGone(ImageTemplate template, CaptureSource source, int timeoutSeconds) {
+        return waitUntilGone(template, source, null, timeoutSeconds, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static boolean waitUntilGone(ImageTemplate template, CaptureSource source, Rect region,
+                                        int timeoutSeconds, double confidence) {
+        long startTime = System.currentTimeMillis();
+        long timeoutMs = timeoutSeconds * 1000L;
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            if (!find(template, source, region, confidence).isFound()) {
+                return true;
+            }
+            Wait.milliseconds(100);
+        }
+        return false;
+    }
+
+    public static boolean waitAndClick(ImageTemplate template, CaptureSource source, int timeoutSeconds) {
+        MatchResult result = waitFor(template, source, timeoutSeconds);
+        if (result.isFound()) {
+            Point clickPoint = ClickConfig.RANDOMIZE_CLICKS ? result.getRandomClickPoint() : result.getCenter();
+            Mouse.click(clickPoint);
+            Wait.milliseconds(ClickConfig.DEFAULT_FOUND_DELAY);
+            return true;
+        }
         return false;
     }
 }

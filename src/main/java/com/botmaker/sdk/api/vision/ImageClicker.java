@@ -2,6 +2,7 @@ package com.botmaker.sdk.api.vision;
 
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.Rect;
+import com.botmaker.sdk.api.capture.CaptureSource;
 import com.botmaker.sdk.api.interaction.Mouse;
 import com.botmaker.sdk.api.interaction.Wait;
 import com.botmaker.sdk.api.observe.Bots;
@@ -172,5 +173,72 @@ public class ImageClicker {
         if (Bots.hasObservers()) {
             Bots.fireClick(new ClickEvent(Surface.ofScreen(), clickPoint, ClickEvent.LEFT));
         }
+    }
+
+    // =====================================================================================
+    // CaptureSource-targeted overloads: locate the template within a specific window / monitor,
+    // then click at the resulting absolute screen coordinate. Mirrors the screen-default family.
+    // =====================================================================================
+
+    public static boolean click(ImageTemplate template, CaptureSource source) {
+        return click(template, source, null, ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_FOUND_DELAY);
+    }
+
+    public static boolean click(ImageTemplate template, CaptureSource source, Rect region, double confidence, int delayMs) {
+        return clickResult(find(template, source, region, confidence),
+                delayMs > 0 ? delayMs : ClickConfig.DEFAULT_FOUND_DELAY);
+    }
+
+    public static boolean click(ImageTemplateGroup group, CaptureSource source) {
+        return clickAny(source, null, ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
+    }
+
+    public static boolean clickBest(ImageTemplate template, CaptureSource source) {
+        return clickResult(ImageFinder.findBest(template, source));
+    }
+
+    public static boolean clickBest(ImageTemplateGroup group, CaptureSource source) {
+        return clickResult(ImageFinder.findBest(group, source));
+    }
+
+    public static boolean clickAny(CaptureSource source, ImageTemplate... templates) {
+        return clickAny(source, null, ClickConfig.DEFAULT_CONFIDENCE, templates);
+    }
+
+    public static boolean clickAny(CaptureSource source, Rect region, double confidence, ImageTemplate... templates) {
+        for (ImageTemplate template : templates) {
+            if (click(template, source, region, confidence, ClickConfig.DEFAULT_FOUND_DELAY)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static int clickAll(ImageTemplate template, CaptureSource source) {
+        return clickAll(template, source, null, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static int clickAll(ImageTemplate template, CaptureSource source, Rect region, double confidence) {
+        List<MatchResult> matches = findAll(template, source, region, confidence);
+        for (MatchResult match : matches) {
+            Point clickPoint = ClickConfig.RANDOMIZE_CLICKS ? match.getRandomClickPoint() : match.getCenter();
+            Mouse.click(clickPoint);
+            emitClick(clickPoint);
+            Wait.milliseconds(ClickConfig.DEFAULT_FOUND_DELAY);
+        }
+        return matches.size();
+    }
+
+    /** {@link #clickResult(MatchResult)} with an explicit found-delay (source-targeted click path). */
+    private static boolean clickResult(MatchResult result, int delayMs) {
+        if (result.isFound()) {
+            Point clickPoint = ClickConfig.RANDOMIZE_CLICKS ? result.getRandomClickPoint() : result.getCenter();
+            Mouse.click(clickPoint);
+            emitClick(clickPoint);
+            Wait.milliseconds(delayMs);
+            return true;
+        }
+        Wait.milliseconds(ClickConfig.DEFAULT_NOT_FOUND_DELAY);
+        return false;
     }
 }

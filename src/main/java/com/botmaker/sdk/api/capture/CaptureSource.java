@@ -26,4 +26,13 @@ public interface CaptureSource {
     static CaptureSource screen() {
         return Screen.asSource();
     }
+
+    /**
+     * The first window whose title contains {@code titleSubstring} (case-insensitive) as a capture source,
+     * or the whole {@link #screen()} if none matches. A convenience so a capture-source slot can target a
+     * window by title in one call without unwrapping the {@link Window#find(String)} {@code Optional}.
+     */
+    static CaptureSource window(String titleSubstring) {
+        return Window.find(titleSubstring).map(w -> (CaptureSource) w).orElseGet(CaptureSource::screen);
+    }
 }
