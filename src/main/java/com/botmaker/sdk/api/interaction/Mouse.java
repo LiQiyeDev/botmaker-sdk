@@ -1,6 +1,7 @@
 package com.botmaker.sdk.api.interaction;
 
 import com.botmaker.sdk.api.Point;
+import com.botmaker.sdk.api.capture.CaptureSource;
 import com.botmaker.shared.capture.NativeController;
 import com.botmaker.shared.capture.NativeControllerFactory;
 
@@ -22,6 +23,17 @@ public class Mouse {
 
     public static void click(int x, int y) {
         click(new Point(x, y));
+    }
+
+    /**
+     * Left-clicks at {@code (x, y)} relative to a {@link CaptureSource}'s {@link CaptureSource#origin() origin}
+     * — a fixed point inside a window (or a monitor / region), independent of where that surface currently
+     * sits on the desktop. Equivalent to clicking {@code source.origin() + (x, y)} in absolute coordinates.
+     */
+    public static void click(CaptureSource source, int x, int y) {
+        if (source == null) return;
+        Point o = source.origin();
+        click((int) o.x + x, (int) o.y + y);
     }
 
     // --- Movement ---

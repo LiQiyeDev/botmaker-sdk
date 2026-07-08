@@ -8,6 +8,34 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-08 — CaptureSource redesign: three kinds, region-as-modifier, full method coverage
+
+**Done**
+- **`CaptureSource` is now exactly one of three, on one class:** `CaptureSource.desktop()` (whole virtual
+  desktop, replaces `screen()`), `CaptureSource.monitor(int)` (a single screen, replaces `Screen.at(int)` as
+  the public factory), `CaptureSource.window(String)`. `Screen.at` → internal `Screen.monitorSource(int)`
+  backing `monitor(int)`. **Breaking** (sanctioned — early dev): callers of `CaptureSource.screen()` /
+  `Screen.at(i)` move to `desktop()` / `monitor(i)`.
+- **Region is a modifier on a source, not a separate parameter:** `source.region(Rect)` / `region(x,y,w,h)`
+  returns a sub-source that actually **crops** `capture()` to that rect (in the source's own pixel space) and
+  shifts `origin()` — so it both restricts the search area (fixes the old offset-only `region` that never
+  cropped) and keeps absolute click coords. Regions compose.
+- **Vision facades collapsed to `(template, CaptureSource[, double confidence])`.** Dropped every bare `Rect
+  region` overload across `ImageFinder`/`ImageClicker`/`ImageWaiter`; each op now has a whole-desktop default
+  + a `CaptureSource` form + optional trailing confidence. Uniform source coverage by construction — notably
+  **`ImageClicker.clickCompare` gained CaptureSource overloads** (previously zero, though `findCompare` had
+  them), plus the missing `ImageWaiter`/`findAny` forms.
+- **`Mouse.click(CaptureSource src, int x, int y)`** — plain click at `src.origin() + (x,y)`: a fixed point
+  inside a window/monitor/region, monitor-independent.
+- **Observability preserved without a region param:** added `CaptureSource.base()` / `subRegion()` hooks;
+  `ImageFinder` emits `MatchEvent(Surface.of(source.base()), source.subRegion(), result)` so overlays still
+  know the window/screen + searched sub-rect.
+- Supersedes the prior additive-overload entry below (which piled Rect+source overloads on); those Rect
+  overloads are now gone in favour of `source.region(...)`.
+
+**Deferred / next**
+- Studio-side visual rubber-band region selection (interim: numeric x/y/w/h entry in the capture chooser).
+
 ## 2026-07-08 — Full CaptureSource overload coverage + `CaptureSource.window`
 
 **Done**

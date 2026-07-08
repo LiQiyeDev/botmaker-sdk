@@ -24,12 +24,13 @@ public class Screen {
     }
 
     /**
-     * A single monitor (0-based {@code index} into the OS screen-device list) as a {@link CaptureSource},
-     * so a bot can match against just one screen on a multi-monitor desktop. In-image match coordinates are
-     * converted to absolute, clickable coordinates by adding {@link CaptureSource#origin()} (the monitor's
-     * top-left in virtual-screen space). An out-of-range index falls back to the whole desktop.
+     * A single monitor (0-based {@code index} into the OS screen-device list) as a {@link CaptureSource}.
+     * Prefer the public entry point {@link CaptureSource#monitor(int)} — this is its backing implementation.
+     * In-image match coordinates are converted to absolute, clickable coordinates by adding
+     * {@link CaptureSource#origin()} (the monitor's top-left in virtual-screen space). An out-of-range index
+     * falls back to the whole desktop.
      */
-    public static CaptureSource at(int index) {
+    public static CaptureSource monitorSource(int index) {
         return new CaptureSource() {
             @Override
             public BufferedImage capture() {
