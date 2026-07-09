@@ -2,6 +2,7 @@ package com.botmaker.sdk.api.vision;
 
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.capture.CaptureSource;
+import com.botmaker.sdk.api.capture.Source;
 import com.botmaker.sdk.api.observe.Bots;
 import com.botmaker.sdk.api.observe.MatchEvent;
 import com.botmaker.sdk.api.observe.Surface;
@@ -33,11 +34,11 @@ public class ImageFinder {
     // --- find (single template) ---
 
     public static MatchResult find(ImageTemplate template) {
-        return find(template, CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE);
+        return find(template, Source.current(), ClickConfig.DEFAULT_CONFIDENCE);
     }
 
     public static MatchResult find(ImageTemplate template, double confidence) {
-        return find(template, CaptureSource.desktop(), confidence);
+        return find(template, Source.current(), confidence);
     }
 
     public static MatchResult find(ImageTemplate template, CaptureSource source) {
@@ -89,11 +90,11 @@ public class ImageFinder {
     // --- findAny (first template, in order, that clears the threshold) ---
 
     public static MatchResult findAny(ImageTemplate... templates) {
-        return findAny(CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE, templates);
+        return findAny(Source.current(), ClickConfig.DEFAULT_CONFIDENCE, templates);
     }
 
     public static MatchResult findAny(double confidence, ImageTemplate... templates) {
-        return findAny(CaptureSource.desktop(), confidence, templates);
+        return findAny(Source.current(), confidence, templates);
     }
 
     public static MatchResult findAny(CaptureSource source, ImageTemplate... templates) {
@@ -110,53 +111,33 @@ public class ImageFinder {
         return MatchResult.notFound();
     }
 
-    // --- Group matching: first-match over an ImageTemplateGroup (mirrors findAny) ---
+    // --- findAny over an ImageTemplateGroup: first template in the group that clears the threshold ---
 
-    public static MatchResult find(ImageTemplateGroup group) {
-        return findAny(CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
+    public static MatchResult findAny(ImageTemplateGroup group) {
+        return findAny(Source.current(), ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
     }
 
-    public static MatchResult find(ImageTemplateGroup group, double confidence) {
-        return findAny(CaptureSource.desktop(), confidence, group.toArray());
+    public static MatchResult findAny(ImageTemplateGroup group, double confidence) {
+        return findAny(Source.current(), confidence, group.toArray());
     }
 
-    public static MatchResult find(ImageTemplateGroup group, CaptureSource source) {
+    public static MatchResult findAny(ImageTemplateGroup group, CaptureSource source) {
         return findAny(source, ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
     }
 
-    public static MatchResult find(ImageTemplateGroup group, CaptureSource source, double confidence) {
+    public static MatchResult findAny(ImageTemplateGroup group, CaptureSource source, double confidence) {
         return findAny(source, confidence, group.toArray());
     }
 
     // --- Best match: evaluate fully and return the single highest-scoring match ---
 
-    /**
-     * The best location for {@code template}. Where {@code find} may accept the first location that
-     * clears the threshold, {@code findBest} always returns the globally highest-scoring one.
-     */
-    public static MatchResult findBest(ImageTemplate template) {
-        return find(template);
-    }
-
-    public static MatchResult findBest(ImageTemplate template, double confidence) {
-        return find(template, confidence);
-    }
-
-    public static MatchResult findBest(ImageTemplate template, CaptureSource source) {
-        return find(template, source);
-    }
-
-    public static MatchResult findBest(ImageTemplate template, CaptureSource source, double confidence) {
-        return find(template, source, confidence);
-    }
-
     /** The single highest-scoring match across every template in {@code group}. */
     public static MatchResult findBest(ImageTemplateGroup group) {
-        return findBest(group, CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE);
+        return findBest(group, Source.current(), ClickConfig.DEFAULT_CONFIDENCE);
     }
 
     public static MatchResult findBest(ImageTemplateGroup group, double confidence) {
-        return findBest(group, CaptureSource.desktop(), confidence);
+        return findBest(group, Source.current(), confidence);
     }
 
     public static MatchResult findBest(ImageTemplateGroup group, CaptureSource source) {
@@ -188,13 +169,13 @@ public class ImageFinder {
      * @param bad  the look-alike distractor that must NOT out-score {@code good} at the same spot
      */
     public static MatchResult findCompare(ImageTemplate good, ImageTemplate bad) {
-        return compare(List.of(good), List.of(bad), CaptureSource.desktop(),
+        return compare(List.of(good), List.of(bad), Source.current(),
                 ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
     }
 
     /** Match {@code good} only if it beats every distractor in {@code bad} at its location by the default margin. */
     public static MatchResult findCompare(ImageTemplate good, ImageTemplate... bad) {
-        return compare(List.of(good), List.of(bad), CaptureSource.desktop(),
+        return compare(List.of(good), List.of(bad), Source.current(),
                 ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
     }
 
@@ -213,12 +194,12 @@ public class ImageFinder {
      * {@code bad} template at its location by the default margin.
      */
     public static MatchResult findCompare(ImageTemplateGroup good, ImageTemplateGroup bad) {
-        return compare(good.templates(), bad.templates(), CaptureSource.desktop(),
+        return compare(good.templates(), bad.templates(), Source.current(),
                 ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
     }
 
     public static MatchResult findCompare(ImageTemplateGroup good, ImageTemplateGroup bad, double margin) {
-        return compare(good.templates(), bad.templates(), CaptureSource.desktop(),
+        return compare(good.templates(), bad.templates(), Source.current(),
                 ClickConfig.DEFAULT_CONFIDENCE, margin);
     }
 
@@ -289,11 +270,11 @@ public class ImageFinder {
     // --- findAll (every location above the threshold) ---
 
     public static List<MatchResult> findAll(ImageTemplate template) {
-        return findAll(template, CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE);
+        return findAll(template, Source.current(), ClickConfig.DEFAULT_CONFIDENCE);
     }
 
     public static List<MatchResult> findAll(ImageTemplate template, double confidence) {
-        return findAll(template, CaptureSource.desktop(), confidence);
+        return findAll(template, Source.current(), confidence);
     }
 
     public static List<MatchResult> findAll(ImageTemplate template, CaptureSource source) {
@@ -337,6 +318,28 @@ public class ImageFinder {
                 background.release();
             }
         }
+    }
+
+    // --- findAll over an ImageTemplateGroup: every location of every template above the threshold ---
+
+    public static List<MatchResult> findAll(ImageTemplateGroup group) {
+        return findAll(group, Source.current(), ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static List<MatchResult> findAll(ImageTemplateGroup group, double confidence) {
+        return findAll(group, Source.current(), confidence);
+    }
+
+    public static List<MatchResult> findAll(ImageTemplateGroup group, CaptureSource source) {
+        return findAll(group, source, ClickConfig.DEFAULT_CONFIDENCE);
+    }
+
+    public static List<MatchResult> findAll(ImageTemplateGroup group, CaptureSource source, double confidence) {
+        List<MatchResult> all = new ArrayList<>();
+        for (ImageTemplate template : group.templates()) {
+            all.addAll(findAll(template, source, confidence));
+        }
+        return all;
     }
 
     // --- Observability: report each match attempt to registered BotObservers (see api.observe.Bots) ---
@@ -398,7 +401,7 @@ public class ImageFinder {
 
     /** True only if <em>every</em> template is currently visible (empty input is false). */
     public static boolean existsAll(ImageTemplate... templates) {
-        return existsAll(CaptureSource.desktop(), templates);
+        return existsAll(Source.current(), templates);
     }
 
     public static boolean existsAll(CaptureSource source, ImageTemplate... templates) {
@@ -417,11 +420,11 @@ public class ImageFinder {
 
     /** True if <em>any</em> template in {@code group} is currently visible (first-match). */
     public static boolean exists(ImageTemplateGroup group) {
-        return find(group).isFound();
+        return findAny(group).isFound();
     }
 
     public static boolean exists(ImageTemplateGroup group, CaptureSource source) {
-        return find(group, source).isFound();
+        return findAny(group, source).isFound();
     }
 
     /** True only if <em>every</em> template in {@code group} is currently visible. */
@@ -446,7 +449,7 @@ public class ImageFinder {
 
     /** Run {@code action} once with the match if {@code template} is currently visible. */
     public static boolean ifExists(ImageTemplate template, Consumer<MatchResult> action) {
-        return ifExists(template, CaptureSource.desktop(), action);
+        return ifExists(template, Source.current(), action);
     }
 
     public static boolean ifExists(ImageTemplate template, CaptureSource source, Consumer<MatchResult> action) {
@@ -460,7 +463,7 @@ public class ImageFinder {
 
     /** Keep running {@code action} (with the fresh match each time) as long as {@code template} stays visible. */
     public static void whileExists(ImageTemplate template, Consumer<MatchResult> action) {
-        whileExists(template, CaptureSource.desktop(), action);
+        whileExists(template, Source.current(), action);
     }
 
     public static void whileExists(ImageTemplate template, CaptureSource source, Consumer<MatchResult> action) {
@@ -472,7 +475,7 @@ public class ImageFinder {
 
     /** Keep running {@code action} until {@code template} appears (no match exists while it's absent). */
     public static void untilExists(ImageTemplate template, Runnable action) {
-        untilExists(template, CaptureSource.desktop(), action);
+        untilExists(template, Source.current(), action);
     }
 
     public static void untilExists(ImageTemplate template, CaptureSource source, Runnable action) {
@@ -488,11 +491,11 @@ public class ImageFinder {
     // meaningful MatchResult, so there is nothing to hand you (mirrors untilExists' Runnable).
 
     public static boolean ifExistsAny(ImageTemplateGroup group, Consumer<MatchResult> action) {
-        return ifExistsAny(group, CaptureSource.desktop(), action);
+        return ifExistsAny(group, Source.current(), action);
     }
 
     public static boolean ifExistsAny(ImageTemplateGroup group, CaptureSource source, Consumer<MatchResult> action) {
-        MatchResult result = find(group, source);
+        MatchResult result = findAny(group, source);
         if (result.isFound()) {
             action.accept(result);
             return true;
@@ -501,7 +504,7 @@ public class ImageFinder {
     }
 
     public static boolean ifExistsAll(ImageTemplateGroup group, Runnable action) {
-        return ifExistsAll(group, CaptureSource.desktop(), action);
+        return ifExistsAll(group, Source.current(), action);
     }
 
     public static boolean ifExistsAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
@@ -513,18 +516,18 @@ public class ImageFinder {
     }
 
     public static void whileExistsAny(ImageTemplateGroup group, Consumer<MatchResult> action) {
-        whileExistsAny(group, CaptureSource.desktop(), action);
+        whileExistsAny(group, Source.current(), action);
     }
 
     public static void whileExistsAny(ImageTemplateGroup group, CaptureSource source, Consumer<MatchResult> action) {
         MatchResult result;
-        while ((result = find(group, source)).isFound()) {
+        while ((result = findAny(group, source)).isFound()) {
             action.accept(result);
         }
     }
 
     public static void whileExistsAll(ImageTemplateGroup group, Runnable action) {
-        whileExistsAll(group, CaptureSource.desktop(), action);
+        whileExistsAll(group, Source.current(), action);
     }
 
     public static void whileExistsAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
@@ -534,7 +537,7 @@ public class ImageFinder {
     }
 
     public static void untilExistsAny(ImageTemplateGroup group, Runnable action) {
-        untilExistsAny(group, CaptureSource.desktop(), action);
+        untilExistsAny(group, Source.current(), action);
     }
 
     public static void untilExistsAny(ImageTemplateGroup group, CaptureSource source, Runnable action) {
@@ -544,7 +547,7 @@ public class ImageFinder {
     }
 
     public static void untilExistsAll(ImageTemplateGroup group, Runnable action) {
-        untilExistsAll(group, CaptureSource.desktop(), action);
+        untilExistsAll(group, Source.current(), action);
     }
 
     public static void untilExistsAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {

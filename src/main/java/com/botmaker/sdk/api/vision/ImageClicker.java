@@ -2,6 +2,7 @@ package com.botmaker.sdk.api.vision;
 
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.capture.CaptureSource;
+import com.botmaker.sdk.api.capture.Source;
 import com.botmaker.sdk.api.interaction.Mouse;
 import com.botmaker.sdk.api.interaction.Wait;
 import com.botmaker.sdk.api.observe.Bots;
@@ -24,11 +25,11 @@ public class ImageClicker {
     // --- click (single template) ---
 
     public static boolean click(ImageTemplate template) {
-        return click(template, CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_FOUND_DELAY);
+        return click(template, Source.current(), ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_FOUND_DELAY);
     }
 
     public static boolean click(ImageTemplate template, int delayMs) {
-        return click(template, CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE, delayMs);
+        return click(template, Source.current(), ClickConfig.DEFAULT_CONFIDENCE, delayMs);
     }
 
     public static boolean click(ImageTemplate template, CaptureSource source) {
@@ -53,11 +54,11 @@ public class ImageClicker {
 
     /** Click the first template in {@code group} (in order) that clears the threshold. */
     public static boolean click(ImageTemplateGroup group) {
-        return clickAny(CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
+        return clickAny(Source.current(), ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
     }
 
     public static boolean click(ImageTemplateGroup group, double confidence) {
-        return clickAny(CaptureSource.desktop(), confidence, group.toArray());
+        return clickAny(Source.current(), confidence, group.toArray());
     }
 
     public static boolean click(ImageTemplateGroup group, CaptureSource source) {
@@ -70,17 +71,17 @@ public class ImageClicker {
 
     // --- Best clicking ---
 
-    /** Click the globally highest-scoring match for {@code template}. */
+    /** Click the globally highest-scoring match for {@code template} ({@code find} already returns the best). */
     public static boolean clickBest(ImageTemplate template) {
-        return clickResult(ImageFinder.findBest(template));
+        return clickResult(ImageFinder.find(template));
     }
 
     public static boolean clickBest(ImageTemplate template, CaptureSource source) {
-        return clickResult(ImageFinder.findBest(template, source));
+        return clickResult(ImageFinder.find(template, source));
     }
 
     public static boolean clickBest(ImageTemplate template, CaptureSource source, double confidence) {
-        return clickResult(ImageFinder.findBest(template, source, confidence));
+        return clickResult(ImageFinder.find(template, source, confidence));
     }
 
     /** Click the single highest-scoring match across every template in {@code group}. */
@@ -128,11 +129,11 @@ public class ImageClicker {
     // --- clickAny (varargs) ---
 
     public static boolean clickAny(ImageTemplate... templates) {
-        return clickAny(CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE, templates);
+        return clickAny(Source.current(), ClickConfig.DEFAULT_CONFIDENCE, templates);
     }
 
     public static boolean clickAny(double confidence, ImageTemplate... templates) {
-        return clickAny(CaptureSource.desktop(), confidence, templates);
+        return clickAny(Source.current(), confidence, templates);
     }
 
     public static boolean clickAny(CaptureSource source, ImageTemplate... templates) {
@@ -151,11 +152,11 @@ public class ImageClicker {
     // --- clickAll (every location above the threshold) ---
 
     public static int clickAll(ImageTemplate template) {
-        return clickAll(template, CaptureSource.desktop(), ClickConfig.DEFAULT_CONFIDENCE);
+        return clickAll(template, Source.current(), ClickConfig.DEFAULT_CONFIDENCE);
     }
 
     public static int clickAll(ImageTemplate template, double confidence) {
-        return clickAll(template, CaptureSource.desktop(), confidence);
+        return clickAll(template, Source.current(), confidence);
     }
 
     public static int clickAll(ImageTemplate template, CaptureSource source) {

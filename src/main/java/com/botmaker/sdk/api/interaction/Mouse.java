@@ -44,7 +44,8 @@ public class Mouse {
         controller().mouseMove((int) p.x, (int) p.y);
     }
 
-    public static void moveTo(int x, int y) {
+    /** Move the cursor to absolute screen coordinates {@code (x, y)}. */
+    public static void move(int x, int y) {
         controller().mouseMove(x, y);
     }
 
@@ -53,6 +54,12 @@ public class Mouse {
     /** Hold a mouse button down at the current cursor position. */
     public static void down(MouseButton button) {
         controller().mouseButton(button.code(), true);
+    }
+
+    /** Move to {@code p}, then hold {@code button} down there. */
+    public static void down(MouseButton button, Point p) {
+        if (p != null) move(p);
+        down(button);
     }
 
     /** Release a held mouse button. */
@@ -83,16 +90,55 @@ public class Mouse {
         up(MouseButton.LEFT);
     }
 
-    /** Press-and-hold at {@code start}, move to {@code end}, then release (a drag). */
+    /** Press-and-hold at {@code start}, move straight to {@code end}, then release (an instant drag). */
     public static void drag(Point start, Point end) {
+        drag(start, end, 0);
+    }
+
+    /**
+     * Press-and-hold at {@code start}, glide to {@code end} over {@code durationMs} milliseconds, then
+     * release. A non-zero duration interpolates the move in small steps so games that track drag
+     * velocity (map panning, slingshots, drawing) see a smooth gesture instead of a teleport.
+     */
+    public static void drag(Point start, Point end, long durationMs) {
         move(start);
         down(MouseButton.LEFT);
-        move(end);
+        if (durationMs > 0 && start != null && end != null) {
+            int steps = Math.max(1, (int) (durationMs / 15));
+            long perStep = durationMs / steps;
+            for (int i = 1; i <= steps; i++) {
+                double t = (double) i / steps;
+                move(new Point(start.x + (end.x - start.x) * t, start.y + (end.y - start.y) * t));
+                if (perStep > 0) {
+                    try {
+                        Thread.sleep(perStep);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+                }
+            }
+        } else {
+            move(end);
+        }
         up(MouseButton.LEFT);
     }
 
-    /** Scroll the wheel: positive = up/away, negative = down/toward. */
-    public static void scroll(int amount) {
-        controller().scroll(amount);
+    /**
+     * Scroll the wheel by {@code notches}. Positive scrolls up / away from you, negative scrolls
+     * down / toward you. Prefer the clearer {@link #scrollUp(int)} / {@link #scrollDown(int)}.
+     */
+    public static void scroll(int notches) {
+        controller().scroll(notches);
+    }
+
+    /** Scroll up / away from you by {@code notches} (always a positive amount). */
+    public static void scrollUp(int notches) {
+        controller().scroll(Math.abs(notches));
+    }
+
+    /** Scroll down / toward you by {@code notches} (always a positive amount). */
+    public static void scrollDown(int notches) {
+        controller().scroll(-Math.abs(notches));
     }
 }

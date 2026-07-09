@@ -32,9 +32,9 @@ public interface CaptureSource {
 
     // --- The three canonical sources ---
 
-    /** The whole virtual desktop (all monitors). The default source for every matcher. */
+    /** The whole virtual desktop (all monitors). The ultimate fallback source for every matcher. */
     static CaptureSource desktop() {
-        return Screen.asSource();
+        return new Desktop();
     }
 
     /**
@@ -42,7 +42,7 @@ public interface CaptureSource {
      * just one screen on a multi-monitor desktop. An out-of-range index falls back to the whole desktop.
      */
     static CaptureSource monitor(int index) {
-        return Screen.monitorSource(index);
+        return new Monitor(index);
     }
 
     /**

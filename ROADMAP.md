@@ -8,6 +8,39 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-09 — API cleanup: global Source, concrete capture sources, Mouse ergonomics, resolution-independent matching
+
+**Done**
+- **Global ambient capture source.** New `api.capture.Source` holds a mutable global `current()`
+  source; `Source.set(CaptureSource)` overrides it until changed. Every no-source overload in
+  `ImageFinder`/`ImageClicker`/`ImageWaiter` now resolves through `Source.current()` instead of the
+  inlined `CaptureSource.desktop()`. `current()` initialises lazily to the **project default source**
+  (`internal.config.ProjectDefaults`, read from the classpath resource `/botmaker-project.properties`
+  that Studio bakes into a bot), falling back to the whole `Desktop` when unset.
+- **Concrete capture-source hierarchy.** Added `api.capture.Desktop` and `api.capture.Monitor`
+  implementing `CaptureSource` (replacing the anonymous inner classes `Screen.asSource()` /
+  `Screen.monitorSource(int)`, now removed). `CaptureSource.desktop()`/`monitor(int)` construct these;
+  `Screen` remains the low-level static desktop-capture utility.
+- **Mouse ergonomics.** Added `down(MouseButton, Point)` (move-then-press), `drag(Point, Point, long
+  durationMs)` (timed interpolated drag), `move(int, int)` (merged with `move(Point)`; `moveTo(int,int)`
+  removed), and `scrollUp(int)`/`scrollDown(int)` helpers with a clearer `scroll(int notches)` sign doc.
+- **Vision facade aligned.** Removed `find(ImageTemplateGroup ...)` overloads (find is single-template);
+  added `findAny(ImageTemplateGroup ...)` and `findAll(ImageTemplateGroup ...)`; removed
+  `findBest(ImageTemplate ...)` (redundant — `find` already returns the best single-template match),
+  keeping `findBest(ImageTemplateGroup ...)`. `ImageClicker.clickBest(ImageTemplate)` now delegates to
+  `find`.
+- **Resolution-independent template matching.** `internal.opencv.ResolutionScaler` derives a primary
+  scale = `liveCaptureSize / projectDefaultResolution` (from `ProjectDefaults.defaultResolution()`;
+  `1.0` when unset or implausible). `OpencvManager` resizes the template by that scale before matching:
+  `findBest` (single scale for near-miss telemetry), `findBestMatch` (primary scale, then a small
+  fallback pyramid ±10–20% **only on a threshold miss**, early-out on a hit), and `findMultipleMatches`
+  (primary scale). Pre-existing pixel-exact behaviour is preserved when no default resolution is set.
+
+**Deferred / next**
+- **Studio side of resolution independence:** UI to set the project default capture resolution and to
+  write `capture.width`/`capture.height` (+ `capture.source`) into `/botmaker-project.properties` of a
+  generated bot. Until Studio writes it, the SDK falls back to native scale (no behaviour change).
+
 ## 2026-07-08 — Report best score on a template-match miss + SNAPSHOT shared pin
 
 **Done**

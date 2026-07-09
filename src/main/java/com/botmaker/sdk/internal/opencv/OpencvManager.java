@@ -65,9 +65,29 @@ public final class OpencvManager {
     /**
      * Returns the single best match of {@code template} within {@code background} whose score meets
      * {@code confidenceThreshold}, or {@code null} if none qualifies.
+     *
+     * <p>Resolution-independent: the template is first resized by the project's
+     * {@link ResolutionScaler#primaryScale primary scale}. If that misses the threshold, a small
+     * pyramid of {@link ResolutionScaler#fallbackScales fallback scales} is tried (only on a miss),
+     * so templates keep matching across different screen resolutions / DPI.
      */
     public static RawMatch findBestMatch(Mat template, Mat background, boolean grayscale, double confidenceThreshold) {
-        RawMatch best = findBest(template, background, grayscale);
+        double primary = ResolutionScaler.primaryScale(background.width(), background.height());
+
+        RawMatch best = matchScaled(template, background, grayscale, primary);
+        if (best != null && best.score() >= confidenceThreshold) {
+            return best;
+        }
+        // Miss at the primary scale — walk the fallback pyramid, keeping the best, early-out on a hit.
+        for (double scale : ResolutionScaler.fallbackScales(primary)) {
+            RawMatch candidate = matchScaled(template, background, grayscale, scale);
+            if (candidate != null && (best == null || candidate.score() > best.score())) {
+                best = candidate;
+            }
+            if (best != null && best.score() >= confidenceThreshold) {
+                return best;
+            }
+        }
         return (best != null && best.score() >= confidenceThreshold) ? best : null;
     }
 
@@ -76,9 +96,23 @@ public final class OpencvManager {
      * confidence threshold ({@code score} is the raw {@code TM_CCOEFF_NORMED} peak), or {@code null} only when
      * the template can't fit the background. Callers that need a threshold gate use {@link #findBestMatch};
      * telemetry uses this so a miss can still report the real near-miss score instead of zero.
+     *
+     * <p>Applies the project's {@link ResolutionScaler#primaryScale primary scale} (single scale, no
+     * pyramid) so the reported near-miss score reflects the resolution-corrected template.
      */
     public static RawMatch findBest(Mat template, Mat background, boolean grayscale) {
-        Mat localTemplate = template.clone();
+        double primary = ResolutionScaler.primaryScale(background.width(), background.height());
+        return matchScaled(template, background, grayscale, primary);
+    }
+
+    /**
+     * Single-scale core: resize {@code template} by {@code scale} (1.0 = native) and return its best
+     * location within {@code background} in background-pixel coordinates, with {@code width}/{@code
+     * height} equal to the scaled (on-screen) template size. Returns {@code null} when the scaled
+     * template cannot fit the background.
+     */
+    private static RawMatch matchScaled(Mat template, Mat background, boolean grayscale, double scale) {
+        Mat localTemplate = resizeTemplate(template, scale);
         Mat localBackground = background.clone();
         Mat resultMat = new Mat();
         try {
@@ -86,7 +120,6 @@ public final class OpencvManager {
             normalise(localBackground, grayscale);
 
             if (localBackground.width() < localTemplate.width() || localBackground.height() < localTemplate.height()) {
-                System.err.println("Error: Template dimensions are larger than the background image.");
                 return null;
             }
 
@@ -99,6 +132,19 @@ public final class OpencvManager {
             localBackground.release();
             resultMat.release();
         }
+    }
+
+    /** A clone of {@code template} resized by {@code scale}; an unscaled clone when scale ≈ 1. */
+    private static Mat resizeTemplate(Mat template, double scale) {
+        if (Math.abs(scale - 1.0) < 1e-3) {
+            return template.clone();
+        }
+        int w = Math.max(1, (int) Math.round(template.cols() * scale));
+        int h = Math.max(1, (int) Math.round(template.rows() * scale));
+        Mat resized = new Mat();
+        Imgproc.resize(template, resized, new org.opencv.core.Size(w, h), 0, 0,
+                scale < 1.0 ? Imgproc.INTER_AREA : Imgproc.INTER_LINEAR);
+        return resized;
     }
 
     /**
@@ -155,14 +201,22 @@ public final class OpencvManager {
      */
     public static List<RawMatch> findMultipleMatches(Mat template, Mat background, boolean grayscale,
                                                      double confidenceThreshold, double overlapThreshold) {
-        if (template.empty() || background.empty()
-                || background.width() < template.width() || background.height() < template.height()) {
+        if (template.empty() || background.empty()) {
             System.err.println("Error: Invalid input images for findMultipleMatches.");
             return new ArrayList<>();
         }
 
-        Mat localTemplate = template.clone();
+        // Resolution-independent: match the template at the project's primary scale (single scale here
+        // to keep non-maximal suppression across a single template footprint tractable).
+        double scale = ResolutionScaler.primaryScale(background.width(), background.height());
+        Mat localTemplate = resizeTemplate(template, scale);
         Mat localBackground = background.clone();
+        if (localBackground.width() < localTemplate.width() || localBackground.height() < localTemplate.height()) {
+            System.err.println("Error: Template dimensions are larger than the background image.");
+            localTemplate.release();
+            localBackground.release();
+            return new ArrayList<>();
+        }
         Mat resultMat = new Mat();
         try {
             normalise(localTemplate, grayscale);

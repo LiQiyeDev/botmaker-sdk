@@ -2,6 +2,7 @@ package com.botmaker.sdk.api.vision;
 
 import com.botmaker.sdk.api.Point;
 import com.botmaker.sdk.api.capture.CaptureSource;
+import com.botmaker.sdk.api.capture.Source;
 import com.botmaker.sdk.api.interaction.Mouse;
 import com.botmaker.sdk.api.interaction.Wait;
 
@@ -17,11 +18,11 @@ public class ImageWaiter {
     // --- waitFor ---
 
     public static MatchResult waitFor(ImageTemplate template, int timeoutSeconds) {
-        return waitFor(template, CaptureSource.desktop(), timeoutSeconds, ClickConfig.DEFAULT_CONFIDENCE);
+        return waitFor(template, Source.current(), timeoutSeconds, ClickConfig.DEFAULT_CONFIDENCE);
     }
 
     public static MatchResult waitFor(ImageTemplate template, int timeoutSeconds, double confidence) {
-        return waitFor(template, CaptureSource.desktop(), timeoutSeconds, confidence);
+        return waitFor(template, Source.current(), timeoutSeconds, confidence);
     }
 
     public static MatchResult waitFor(ImageTemplate template, CaptureSource source, int timeoutSeconds) {
@@ -55,11 +56,11 @@ public class ImageWaiter {
     // --- waitUntilGone ---
 
     public static boolean waitUntilGone(ImageTemplate template, int timeoutSeconds) {
-        return waitUntilGone(template, CaptureSource.desktop(), timeoutSeconds, ClickConfig.DEFAULT_CONFIDENCE);
+        return waitUntilGone(template, Source.current(), timeoutSeconds, ClickConfig.DEFAULT_CONFIDENCE);
     }
 
     public static boolean waitUntilGone(ImageTemplate template, int timeoutSeconds, double confidence) {
-        return waitUntilGone(template, CaptureSource.desktop(), timeoutSeconds, confidence);
+        return waitUntilGone(template, Source.current(), timeoutSeconds, confidence);
     }
 
     public static boolean waitUntilGone(ImageTemplate template, CaptureSource source, int timeoutSeconds) {
@@ -92,11 +93,11 @@ public class ImageWaiter {
     // --- waitAndClick ---
 
     public static boolean waitAndClick(ImageTemplate template, int timeoutSeconds) {
-        return waitAndClick(template, CaptureSource.desktop(), timeoutSeconds, ClickConfig.DEFAULT_CONFIDENCE);
+        return waitAndClick(template, Source.current(), timeoutSeconds, ClickConfig.DEFAULT_CONFIDENCE);
     }
 
     public static boolean waitAndClick(ImageTemplate template, int timeoutSeconds, double confidence) {
-        return waitAndClick(template, CaptureSource.desktop(), timeoutSeconds, confidence);
+        return waitAndClick(template, Source.current(), timeoutSeconds, confidence);
     }
 
     public static boolean waitAndClick(ImageTemplate template, CaptureSource source, int timeoutSeconds) {

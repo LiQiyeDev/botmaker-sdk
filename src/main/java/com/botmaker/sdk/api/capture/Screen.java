@@ -23,43 +23,4 @@ public class Screen {
         return new Point(origin.x, origin.y);
     }
 
-    /**
-     * A single monitor (0-based {@code index} into the OS screen-device list) as a {@link CaptureSource}.
-     * Prefer the public entry point {@link CaptureSource#monitor(int)} — this is its backing implementation.
-     * In-image match coordinates are converted to absolute, clickable coordinates by adding
-     * {@link CaptureSource#origin()} (the monitor's top-left in virtual-screen space). An out-of-range index
-     * falls back to the whole desktop.
-     */
-    public static CaptureSource monitorSource(int index) {
-        return new CaptureSource() {
-            @Override
-            public BufferedImage capture() {
-                return ScreenCapture.captureMonitor(index);
-            }
-
-            @Override
-            public Point origin() {
-                java.awt.Rectangle b = ScreenCapture.monitorBounds(index);
-                return new Point(b.x, b.y);
-            }
-        };
-    }
-
-    /**
-     * The whole desktop as a {@link CaptureSource}, so matchers can treat the screen and a
-     * {@link Window} uniformly. Delegates to {@link #capture()} / {@link #captureOrigin()}.
-     */
-    public static CaptureSource asSource() {
-        return new CaptureSource() {
-            @Override
-            public BufferedImage capture() {
-                return Screen.capture();
-            }
-
-            @Override
-            public Point origin() {
-                return Screen.captureOrigin();
-            }
-        };
-    }
 }
