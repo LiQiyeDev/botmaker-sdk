@@ -4,9 +4,9 @@
 # changes WITHOUT pushing a git tag.
 #
 # Why this exists: a generated bot pins `com.github.LiQiyeDev:botmaker-sdk:<version>`, and Maven checks
-# your local ~/.m2 before JitPack. But a plain `mvn install` here installs under `com.botmaker.sdk:...`
-# — the wrong coordinate — so a bot never sees it. This script installs the SDK (and the shared module
-# it depends on) under the *JitPack* coordinate with a `local-SNAPSHOT` dev version instead.
+# your local ~/.m2 before JitPack. A plain `mvn install` now works correctly (groupId matches), but
+# this script also allows you to use a custom dev version label (e.g. `local-SNAPSHOT` instead of
+# the default `0.0.0-SNAPSHOT`) and ensures shared is pinned to 0.0.0-SNAPSHOT for local development.
 #
 # Usage:
 #   ./dev-install.sh                 # install as com.github.LiQiyeDev:botmaker-sdk:local-SNAPSHOT
@@ -28,17 +28,15 @@ DEV_VERSION="${DEV_SDK_VERSION:-local-SNAPSHOT}"
   exit 1
 }
 
-echo "==> (re)installing botmaker-shared into ~/.m2 (so the SDK build + bots resolve it)"
-mvn -q -f "$UMBRELLA/pom.xml" -pl botmaker-shared install -DskipTests
+echo "==> installing botmaker-shared into ~/.m2"
+mvn -q -f "$UMBRELLA/botmaker-shared/pom.xml" install -DskipTests
 
 echo "==> installing botmaker-sdk as com.github.LiQiyeDev:botmaker-sdk:$DEV_VERSION"
 cp "$SDK_DIR/pom.xml" "$SDK_DIR/pom.xml.devbak"
 trap 'mv -f "$SDK_DIR/pom.xml.devbak" "$SDK_DIR/pom.xml"' EXIT
 
-# Rewrite ONLY the project's own coordinates. The shared dep uses ${botmaker.shared.version} and the
-# property line has a different tag name, so these exact-match seds never touch them.
-sed -i 's#<groupId>com.botmaker.sdk</groupId>#<groupId>com.github.LiQiyeDev</groupId>#' "$SDK_DIR/pom.xml"
-sed -i "s#<version>0.0.0-SNAPSHOT</version>#<version>${DEV_VERSION}</version>#"        "$SDK_DIR/pom.xml"
+# Only need to change the version now (groupId is already correct in pom.xml)
+sed -i "s#<version>0.0.0-SNAPSHOT</version>#<version>${DEV_VERSION}</version>#" "$SDK_DIR/pom.xml"
 
 # Point the shared dep at the local reactor SNAPSHOT (installed just above), regardless of what the
 # committed pom pins botmaker.shared.version to — after a release it's a real tag (e.g. v0.0.2), which
