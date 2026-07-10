@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Mouse</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            botmaker-sdk
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter="botmaker-sdk/JVM">JVM</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="botmaker-sdk::com.botmaker.sdk.api.interaction/Mouse///PointingToDeclaration//554661714">
+  <div class="breadcrumbs"><a href="../../../index.html">botmaker-sdk</a><span class="delimiter">/</span><a href="../index.html">com.botmaker.sdk.api.interaction</a><span class="delimiter">/</span><span class="current">Mouse</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Mouse</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">Mouse</a></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1981631179%2FConstructors%2F554661714" anchor-label="Mouse" id="1981631179%2FConstructors%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-mouse.html"><span><span>Mouse</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1981631179%2FConstructors%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-931262370%2FFunctions%2F554661714" anchor-label="click" id="-931262370%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="click.html"><span><span>click</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-931262370%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="click.html"><span class="token function">click</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Left-clicks at specific coordinates on the screen.</div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="click.html"><span class="token function">click</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><br><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="click.html"><span class="token function">click</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">source<span class="token operator">: </span><a href="../../com.botmaker.sdk.api.capture/-capture-source/index.html">CaptureSource</a><span class="token punctuation">, </span></span><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Left-clicks at <code class="lang-kotlin">(x, y)</code> relative to a <a href="../../com.botmaker.sdk.api.capture/-capture-source/index.html">CaptureSource</a>'s <a href="../../com.botmaker.sdk.api.capture/-capture-source/origin.html">origin</a> — a fixed point inside a window (or a monitor / region), independent of where that surface currently sits on the desktop.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1246486773%2FFunctions%2F554661714" anchor-label="doubleClick" id="1246486773%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="double-click.html"><span>double</span><wbr></wbr><span><span>Click</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1246486773%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="double-click.html"><span class="token function">doubleClick</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Two quick left presses at the given point.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1616548911%2FFunctions%2F554661714" anchor-label="down" id="1616548911%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="down.html"><span><span>down</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1616548911%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="down.html"><span class="token function">down</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">button<span class="token operator">: </span><a href="../-mouse-button/index.html">MouseButton</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Hold a mouse button down at the current cursor position.</div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="down.html"><span class="token function">down</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">button<span class="token operator">: </span><a href="../-mouse-button/index.html">MouseButton</a><span class="token punctuation">, </span></span><span class="parameter ">p<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Move to <code class="lang-kotlin">p</code>, then hold <code class="lang-kotlin">button</code> down there.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1155731515%2FFunctions%2F554661714" anchor-label="drag" id="1155731515%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="drag.html"><span><span>drag</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1155731515%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="drag.html"><span class="token function">drag</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">start<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a><span class="token punctuation">, </span></span><span class="parameter ">end<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Press-and-hold at <code class="lang-kotlin">start</code>, move straight to <code class="lang-kotlin">end</code>, then release (an instant drag).</div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="drag.html"><span class="token function">drag</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">start<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a><span class="token punctuation">, </span></span><span class="parameter ">end<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a><span class="token punctuation">, </span></span><span class="parameter ">durationMs<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Press-and-hold at <code class="lang-kotlin">start</code>, glide to <code class="lang-kotlin">end</code> over <code class="lang-kotlin">durationMs</code> milliseconds, then release.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-588832071%2FFunctions%2F554661714" anchor-label="middleClick" id="-588832071%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="middle-click.html"><span>middle</span><wbr></wbr><span><span>Click</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-588832071%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="middle-click.html"><span class="token function">middleClick</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="833738309%2FFunctions%2F554661714" anchor-label="move" id="833738309%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="move.html"><span><span>move</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="833738309%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="move.html"><span class="token function">move</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Move the cursor to an absolute screen coordinate.</div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="move.html"><span class="token function">move</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Move the cursor to absolute screen coordinates <code class="lang-kotlin">(x, y)</code>.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1559818246%2FFunctions%2F554661714" anchor-label="rightClick" id="-1559818246%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="right-click.html"><span>right</span><wbr></wbr><span><span>Click</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1559818246%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="right-click.html"><span class="token function">rightClick</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1014727722%2FFunctions%2F554661714" anchor-label="scroll" id="-1014727722%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="scroll.html"><span><span>scroll</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1014727722%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="scroll.html"><span class="token function">scroll</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">notches<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Scroll the wheel by <code class="lang-kotlin">notches</code>.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-742629992%2FFunctions%2F554661714" anchor-label="scrollDown" id="-742629992%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="scroll-down.html"><span>scroll</span><wbr></wbr><span><span>Down</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-742629992%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="scroll-down.html"><span class="token function">scrollDown</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">notches<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Scroll down / toward you by <code class="lang-kotlin">notches</code> (always a positive amount).</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="786399249%2FFunctions%2F554661714" anchor-label="scrollUp" id="786399249%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="scroll-up.html"><span>scroll</span><wbr></wbr><span><span>Up</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="786399249%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="scroll-up.html"><span class="token function">scrollUp</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">notches<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Scroll up / away from you by <code class="lang-kotlin">notches</code> (always a positive amount).</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1070059296%2FFunctions%2F554661714" anchor-label="up" id="1070059296%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="up.html"><span><span>up</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1070059296%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="up.html"><span class="token function">up</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">button<span class="token operator">: </span><a href="../-mouse-button/index.html">MouseButton</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Release a held mouse button.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2026 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

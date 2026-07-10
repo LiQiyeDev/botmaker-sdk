@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ClickConfig</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            botmaker-sdk
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter="botmaker-sdk/JVM">JVM</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="botmaker-sdk::com.botmaker.sdk.api.vision/ClickConfig///PointingToDeclaration//554661714">
+  <div class="breadcrumbs"><a href="../../../index.html">botmaker-sdk</a><span class="delimiter">/</span><a href="../index.html">com.botmaker.sdk.api.vision</a><span class="delimiter">/</span><span class="current">ClickConfig</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Click</span><wbr></wbr><span><span>Config</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">ClickConfig</a></div><p class="paragraph">Global configuration for click behavior and delays. Mimics your templateFound delay logic from C++.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1654681299%2FConstructors%2F554661714" anchor-label="ClickConfig" id="1654681299%2FConstructors%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-click-config.html"><span>Click</span><wbr></wbr><span><span>Config</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1654681299%2FConstructors%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1205228494%2FProperties%2F554661714" anchor-label="DEBUG_MODE" id="1205228494%2FProperties%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-e-b-u-g_-m-o-d-e.html"><span><span>DEBUG_MODE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1205228494%2FProperties%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="-d-e-b-u-g_-m-o-d-e.html">DEBUG_MODE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief ">Whether to print debug information during matching.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1758942103%2FProperties%2F554661714" anchor-label="DEFAULT_COMPARE_MARGIN" id="1758942103%2FProperties%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-e-f-a-u-l-t_-c-o-m-p-a-r-e_-m-a-r-g-i-n.html"><span><span>DEFAULT_COMPARE_MARGIN</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1758942103%2FProperties%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="-d-e-f-a-u-l-t_-c-o-m-p-a-r-e_-m-a-r-g-i-n.html">DEFAULT_COMPARE_MARGIN</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-double/index.html">Double</a></div><div class="brief ">Default margin the &quot;good&quot; template must beat every &quot;bad&quot; (distractor) template by, at the same location, for findCompare/clickCompare to accept the match.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-52053323%2FProperties%2F554661714" anchor-label="DEFAULT_CONFIDENCE" id="-52053323%2FProperties%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-e-f-a-u-l-t_-c-o-n-f-i-d-e-n-c-e.html"><span><span>DEFAULT_CONFIDENCE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-52053323%2FProperties%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="-d-e-f-a-u-l-t_-c-o-n-f-i-d-e-n-c-e.html">DEFAULT_CONFIDENCE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-double/index.html">Double</a></div><div class="brief ">Default confidence threshold for template matching (0.0 to 1.0).</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1839817269%2FProperties%2F554661714" anchor-label="DEFAULT_FOUND_DELAY" id="1839817269%2FProperties%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-e-f-a-u-l-t_-f-o-u-n-d_-d-e-l-a-y.html"><span><span>DEFAULT_FOUND_DELAY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1839817269%2FProperties%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="-d-e-f-a-u-l-t_-f-o-u-n-d_-d-e-l-a-y.html">DEFAULT_FOUND_DELAY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief ">Delay after successful template match (in milliseconds).</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="737199425%2FProperties%2F554661714" anchor-label="DEFAULT_NOT_FOUND_DELAY" id="737199425%2FProperties%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-e-f-a-u-l-t_-n-o-t_-f-o-u-n-d_-d-e-l-a-y.html"><span><span>DEFAULT_NOT_FOUND_DELAY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="737199425%2FProperties%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="-d-e-f-a-u-l-t_-n-o-t_-f-o-u-n-d_-d-e-l-a-y.html">DEFAULT_NOT_FOUND_DELAY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief ">Delay after failed template match (in milliseconds).</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-834219867%2FProperties%2F554661714" anchor-label="MAX_RETRY_ATTEMPTS" id="-834219867%2FProperties%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-x_-r-e-t-r-y_-a-t-t-e-m-p-t-s.html"><span><span>MAX_RETRY_ATTEMPTS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-834219867%2FProperties%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="-m-a-x_-r-e-t-r-y_-a-t-t-e-m-p-t-s.html">MAX_RETRY_ATTEMPTS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief ">Maximum number of retry attempts before giving up.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="245212388%2FProperties%2F554661714" anchor-label="RANDOMIZE_CLICKS" id="245212388%2FProperties%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-r-a-n-d-o-m-i-z-e_-c-l-i-c-k-s.html"><span><span>RANDOMIZE_CLICKS</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="245212388%2FProperties%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="-r-a-n-d-o-m-i-z-e_-c-l-i-c-k-s.html">RANDOMIZE_CLICKS</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief ">Whether to use randomized click points within templates.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1169022832%2FFunctions%2F554661714" anchor-label="enableDebugMode" id="1169022832%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="enable-debug-mode.html"><span>enable</span><wbr></wbr><span>Debug</span><wbr></wbr><span><span>Mode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1169022832%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="enable-debug-mode.html"><span class="token function">enableDebugMode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">enable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1881041906%2FFunctions%2F554661714" anchor-label="enableRandomClicks" id="-1881041906%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="enable-random-clicks.html"><span>enable</span><wbr></wbr><span>Random</span><wbr></wbr><span><span>Clicks</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1881041906%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="enable-random-clicks.html"><span class="token function">enableRandomClicks</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">enable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="567011649%2FFunctions%2F554661714" anchor-label="resetToDefaults" id="567011649%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="reset-to-defaults.html"><span>reset</span><wbr></wbr><span>To</span><wbr></wbr><span><span>Defaults</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="567011649%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="reset-to-defaults.html"><span class="token function">resetToDefaults</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Resets all settings to their defaults.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1347540829%2FFunctions%2F554661714" anchor-label="setDefaultConfidence" id="-1347540829%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-default-confidence.html"><span>set</span><wbr></wbr><span>Default</span><wbr></wbr><span><span>Confidence</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1347540829%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="set-default-confidence.html"><span class="token function">setDefaultConfidence</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">confidence<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1769306137%2FFunctions%2F554661714" anchor-label="setFoundDelay" id="1769306137%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-found-delay.html"><span>set</span><wbr></wbr><span>Found</span><wbr></wbr><span><span>Delay</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1769306137%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="set-found-delay.html"><span class="token function">setFoundDelay</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">milliseconds<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-555131134%2FFunctions%2F554661714" anchor-label="setMaxRetryAttempts" id="-555131134%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-max-retry-attempts.html"><span>set</span><wbr></wbr><span>Max</span><wbr></wbr><span>Retry</span><wbr></wbr><span><span>Attempts</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-555131134%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="set-max-retry-attempts.html"><span class="token function">setMaxRetryAttempts</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">attempts<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1872794824%2FFunctions%2F554661714" anchor-label="setNotFoundDelay" id="1872794824%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-not-found-delay.html"><span>set</span><wbr></wbr><span>Not</span><wbr></wbr><span>Found</span><wbr></wbr><span><span>Delay</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1872794824%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="set-not-found-delay.html"><span class="token function">setNotFoundDelay</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">milliseconds<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2026 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

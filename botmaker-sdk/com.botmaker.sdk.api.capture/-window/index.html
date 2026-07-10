@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Window</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            botmaker-sdk
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter="botmaker-sdk/JVM">JVM</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="botmaker-sdk::com.botmaker.sdk.api.capture/Window///PointingToDeclaration//554661714">
+  <div class="breadcrumbs"><a href="../../../index.html">botmaker-sdk</a><span class="delimiter">/</span><a href="../index.html">com.botmaker.sdk.api.capture</a><span class="delimiter">/</span><span class="current">Window</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Window</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">Window</a> : <a href="../-capture-source/index.html">CaptureSource</a></div><p class="paragraph">A specific application window the bot can target — capture it, click inside it, and manage it (focus / move / resize). Because <code class="lang-kotlin">Window</code> is a <a href="../-capture-source/index.html">CaptureSource</a>, it can be passed straight into the vision layer (e.g. <code class="lang-kotlin">ImageFinder.find(template, window)</code>) so templates are matched and clicked in the window's own coordinate space — surviving window moves, focus changes and multi-monitor layouts. </p><p class="paragraph">The underlying native handle is kept opaque; obtain a <code class="lang-kotlin">Window</code> via the static factories.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1342290374%2FFunctions%2F554661714" anchor-label="all" id="1342290374%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="all.html"><span><span>all</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1342290374%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="all.html"><span class="token function">all</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="index.html">Window</a><span class="token operator">&gt;</span></div><div class="brief ">Every top-level window the window manager reports (titled + viewable).</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1761238199%2FFunctions%2F554661714" anchor-label="base" id="-1761238199%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-capture-source/base.html"><span><span>base</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1761238199%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-capture-source/base.html"><span class="token function">base</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-capture-source/index.html">CaptureSource</a></div><div class="brief ">The underlying whole-surface source (a <a href="index.html">Window</a> or the screen) this source draws from, unwrapping any <a href="../-capture-source/region.html">region</a> narrowing.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="306955742%2FFunctions%2F554661714" anchor-label="bounds" id="306955742%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="bounds.html"><span><span>bounds</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="306955742%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="bounds.html"><span class="token function">bounds</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-rect/index.html">Rect</a></div><div class="brief ">Absolute screen bounds of the window.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1758770495%2FFunctions%2F554661714" anchor-label="capture" id="-1758770495%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="capture.html"><span><span>capture</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1758770495%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="capture.html"><span class="token function">capture</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/awt/image/BufferedImage.html">BufferedImage</a></div><div class="brief ">Pixels of this source.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1214534808%2FFunctions%2F554661714" anchor-label="click" id="-1214534808%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="click.html"><span><span>click</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1214534808%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="click.html"><span class="token function">click</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">relativeX<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">relativeY<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Click at coordinates relative to this window's top-left (converted to absolute internally).</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="428465348%2FFunctions%2F554661714" anchor-label="desktop" id="428465348%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-capture-source/desktop.html"><span><span>desktop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="428465348%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-capture-source/desktop.html"><span class="token function">desktop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-capture-source/index.html">CaptureSource</a></div><div class="brief ">The whole virtual desktop (all monitors).</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1595211477%2FFunctions%2F554661714" anchor-label="find" id="1595211477%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="find.html"><span><span>find</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1595211477%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="find.html"><span class="token function">find</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">titleSubstring<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html">Optional</a><span class="token operator">&lt;</span><a href="index.html">Window</a><span class="token operator">&gt;</span></div><div class="brief ">The first window whose title contains <code class="lang-kotlin">titleSubstring</code> (case-insensitive), or empty if none match.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2088181743%2FFunctions%2F554661714" anchor-label="focus" id="2088181743%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="focus.html"><span><span>focus</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2088181743%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="focus.html"><span class="token function">focus</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Bring this window to the foreground and give it input focus.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2108087280%2FFunctions%2F554661714" anchor-label="foreground" id="-2108087280%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="foreground.html"><span><span>foreground</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2108087280%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="foreground.html"><span class="token function">foreground</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html">Optional</a><span class="token operator">&lt;</span><a href="index.html">Window</a><span class="token operator">&gt;</span></div><div class="brief ">The window that currently has focus, or empty if none could be resolved.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-357994580%2FFunctions%2F554661714" anchor-label="height" id="-357994580%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="height.html"><span><span>height</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-357994580%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="height.html"><span class="token function">height</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="800121325%2FFunctions%2F554661714" anchor-label="monitor" id="800121325%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-capture-source/monitor.html"><span><span>monitor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="800121325%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-capture-source/monitor.html"><span class="token function">monitor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">index<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-capture-source/index.html">CaptureSource</a></div><div class="brief ">A single monitor (0-based <code class="lang-kotlin">index</code> into the OS screen-device list), so a bot can match against just one screen on a multi-monitor desktop.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="771090821%2FFunctions%2F554661714" anchor-label="move" id="771090821%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="move.html"><span><span>move</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="771090821%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="move.html"><span class="token function">move</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Move this window's top-left corner to the given absolute screen coordinate.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1274757491%2FFunctions%2F554661714" anchor-label="origin" id="-1274757491%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="origin.html"><span><span>origin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1274757491%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="origin.html"><span class="token function">origin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-point/index.html">Point</a></div><div class="brief ">Absolute screen coordinate of pixel (0,0) of the image returned by <a href="../-capture-source/capture.html">capture</a>.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2108666615%2FFunctions%2F554661714" anchor-label="region" id="-2108666615%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-capture-source/region.html"><span><span>region</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2108666615%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-capture-source/region.html"><span class="token function">region</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sub<span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-rect/index.html">Rect</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-capture-source/index.html">CaptureSource</a></div><div class="brief ">A sub-source that only captures the <code class="lang-kotlin">sub</code> rectangle within this source's pixel space (its top-left is <code class="lang-kotlin">(0,0)</code> of <a href="../-capture-source/capture.html">capture</a>).</div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-capture-source/region.html"><span class="token function">region</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">width<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">height<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-capture-source/index.html">CaptureSource</a></div><div class="brief "><a href="../-capture-source/region.html">region</a> from raw coordinates within this source.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-153713688%2FFunctions%2F554661714" anchor-label="resize" id="-153713688%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="resize.html"><span><span>resize</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-153713688%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="resize.html"><span class="token function">resize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">width<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">height<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Resize this window.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="226213324%2FFunctions%2F554661714" anchor-label="subRegion" id="226213324%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-capture-source/sub-region.html"><span>sub</span><wbr></wbr><span><span>Region</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="226213324%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-capture-source/sub-region.html"><span class="token function">subRegion</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.botmaker.sdk.api/-rect/index.html">Rect</a></div><div class="brief ">The searched rectangle within <a href="../-capture-source/base.html">base</a> (in that surface's pixel space), or <code class="lang-kotlin">null</code> when this source captures the whole surface.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1848541807%2FFunctions%2F554661714" anchor-label="title" id="1848541807%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="title.html"><span><span>title</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1848541807%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="title.html"><span class="token function">title</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="361906311%2FFunctions%2F554661714" anchor-label="toString" id="361906311%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-string.html"><span>to</span><wbr></wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="361906311%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="859344577%2FFunctions%2F554661714" anchor-label="width" id="859344577%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="width.html"><span><span>width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="859344577%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="width.html"><span class="token function">width</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1771764165%2FFunctions%2F554661714" anchor-label="window" id="1771764165%2FFunctions%2F554661714" data-filterable-set="botmaker-sdk/JVM"></a>
+          <div class="table-row" data-filterable-current="botmaker-sdk/JVM" data-filterable-set="botmaker-sdk/JVM">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-capture-source/window.html"><span><span>window</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1771764165%2FFunctions%2F554661714"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="botmaker-sdk/JVM"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-capture-source/window.html"><span class="token function">window</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">titleSubstring<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-capture-source/index.html">CaptureSource</a></div><div class="brief ">The first window whose title contains <code class="lang-kotlin">titleSubstring</code> (case-insensitive) as a capture source, or the whole <a href="../-capture-source/desktop.html">desktop</a> if none matches.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2026 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
