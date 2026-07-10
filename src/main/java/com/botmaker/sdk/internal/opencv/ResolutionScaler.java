@@ -22,13 +22,24 @@ final class ResolutionScaler {
     private ResolutionScaler() {}
 
     /**
-     * The scale to resize a template by so it matches the live capture. Returns {@code 1.0} (no
-     * scaling) when no project default resolution is configured, or when the computed ratio is
-     * implausible (e.g. a small cropped region vs. a full-screen authored resolution) so we never
-     * make matching worse than the pre-existing pixel-exact behaviour.
+     * The scale to resize a template by so it matches the live capture, using the project-wide default
+     * authored resolution ({@link ProjectDefaults#defaultResolution()}).
      */
     static double primaryScale(int liveWidth, int liveHeight) {
-        Size authored = ProjectDefaults.defaultResolution();
+        return primaryScale(liveWidth, liveHeight, null);
+    }
+
+    /**
+     * The scale to resize a template by so it matches the live capture. Prefers the template's own
+     * {@code authored} capture resolution (from its metadata sidecar) when provided, else falls back to
+     * the project-wide {@link ProjectDefaults#defaultResolution()}. Returns {@code 1.0} (no scaling) when
+     * neither is configured, or when the computed ratio is implausible (e.g. a small cropped region vs. a
+     * full-screen authored resolution) so we never make matching worse than pixel-exact behaviour.
+     */
+    static double primaryScale(int liveWidth, int liveHeight, Size authored) {
+        if (authored == null || authored.width <= 0 || authored.height <= 0) {
+            authored = ProjectDefaults.defaultResolution();
+        }
         if (authored == null || authored.width <= 0 || authored.height <= 0) {
             return 1.0;
         }

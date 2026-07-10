@@ -1,6 +1,9 @@
 package com.botmaker.sdk.api.vision;
 
+import com.botmaker.sdk.api.Size;
 import com.botmaker.sdk.internal.opencv.OpenCvNative;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -27,6 +30,11 @@ public class ImageTemplate implements AutoCloseable {
 
     // Lazily-loaded OpenCV image data. Null until getMat() is first called.
     private Mat mat;
+
+    // Lazily-loaded authored capture resolution from the "<name>.json" sidecar (best-effort). The
+    // boolean gates the one-time load; the Size stays null when there is no (readable) sidecar.
+    private boolean metadataLoaded;
+    private Size captureResolution;
 
     /**
      * Constructor using file path.
@@ -83,6 +91,41 @@ public class ImageTemplate implements AutoCloseable {
             }
         }
         return mat;
+    }
+
+    /**
+     * The resolution (in physical pixels) of the target window/screen this template was captured from,
+     * read once from the {@code <name>.json} sidecar written by Studio. Used by the matcher to rescale
+     * the template when the live capture is a different resolution. Returns {@code null} when there is no
+     * sidecar (older templates), so the matcher falls back to the project-wide default resolution.
+     */
+    public Size captureResolution() {
+        if (!metadataLoaded) {
+            metadataLoaded = true;
+            captureResolution = loadCaptureResolution();
+        }
+        return captureResolution;
+    }
+
+    /** Best-effort read of {@code captureWidth}/{@code captureHeight} from the sidecar next to the PNG. */
+    private Size loadCaptureResolution() {
+        int dot = filePath.lastIndexOf('.');
+        String sidecar = (dot == -1 ? filePath : filePath.substring(0, dot)) + ".json";
+        File file = new File(sidecar).getAbsoluteFile();
+        if (!file.isFile()) {
+            return null;
+        }
+        try {
+            JsonNode root = new ObjectMapper().readTree(file);
+            JsonNode w = root.get("captureWidth");
+            JsonNode h = root.get("captureHeight");
+            if (w != null && h != null && w.asInt() > 0 && h.asInt() > 0) {
+                return new Size(w.asInt(), h.asInt());
+            }
+        } catch (Exception ignored) {
+            // best-effort: an absent/unreadable/invalid sidecar leaves the resolution unknown (null)
+        }
+        return null;
     }
 
     public int width() {

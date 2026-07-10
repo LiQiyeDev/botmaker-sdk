@@ -128,7 +128,7 @@ public class ImageFinder {
             background = OpencvManager.bufferedImageToMat(screenshot);
 
             // Get the raw best match (below-threshold included) so a miss can still report its real score.
-            RawMatch best = OpencvManager.findBest(template.getMat(), background, false);
+            RawMatch best = OpencvManager.findBest(template.getMat(), background, false, template.captureResolution());
 
             if (best != null && best.score() >= confidence) {
                 Point origin = source.origin();
@@ -368,78 +368,6 @@ public class ImageFinder {
     private static final int COMPARE_PAD = 4;
 
     /**
-     * Match {@code good} only if it out-scores {@code bad} at the same location by
-     * {@link ClickConfig#DEFAULT_COMPARE_MARGIN}. Use for two visually-similar templates (e.g. an
-     * active vs. a greyed-out button) where a plain {@code find} would match either.
-     * <p>
-     * The match result is stored in {@link VisionContext} and can be retrieved with
-     * {@link VisionContext#getLastMatch()}.
-     *
-     * @param good the template you want to match (the "winner")
-     * @param bad  the look-alike distractor that must NOT out-score {@code good} at the same spot
-     * @return true if the good template was found and beats the bad template, false otherwise
-     */
-    public static boolean findCompare(ImageTemplate good, ImageTemplate bad) {
-        MatchResult result = compare(List.of(good), List.of(bad), Source.current(),
-                ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
-        VisionContext.setLastMatch(result);
-        return result.isFound();
-    }
-
-    /**
-     * Match {@code good} only if it beats every distractor in {@code bad} at its location by the default margin.
-     * <p>
-     * The match result is stored in {@link VisionContext} and can be retrieved with
-     * {@link VisionContext#getLastMatch()}.
-     *
-     * @param good the template you want to match (the "winner")
-     * @param bad  the look-alike distractors that must NOT out-score {@code good} at the same spot
-     * @return true if the good template was found and beats all bad templates, false otherwise
-     */
-    public static boolean findCompare(ImageTemplate good, ImageTemplate... bad) {
-        MatchResult result = compare(List.of(good), List.of(bad), Source.current(),
-                ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
-        VisionContext.setLastMatch(result);
-        return result.isFound();
-    }
-
-    /**
-     * Match {@code good} only if it out-scores {@code bad} at the same location by the default margin.
-     * <p>
-     * The match result is stored in {@link VisionContext} and can be retrieved with
-     * {@link VisionContext#getLastMatch()}.
-     *
-     * @param good   the template you want to match (the "winner")
-     * @param bad    the look-alike distractor that must NOT out-score {@code good} at the same spot
-     * @param source the capture source to search within
-     * @return true if the good template was found and beats the bad template, false otherwise
-     */
-    public static boolean findCompare(ImageTemplate good, ImageTemplate bad, CaptureSource source) {
-        MatchResult result = compare(List.of(good), List.of(bad), source,
-                ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
-        VisionContext.setLastMatch(result);
-        return result.isFound();
-    }
-
-    /**
-     * Match {@code good} only if it beats every distractor in {@code bad} at its location by the default margin.
-     * <p>
-     * The match result is stored in {@link VisionContext} and can be retrieved with
-     * {@link VisionContext#getLastMatch()}.
-     *
-     * @param good   the template you want to match (the "winner")
-     * @param source the capture source to search within
-     * @param bad    the look-alike distractors that must NOT out-score {@code good} at the same spot
-     * @return true if the good template was found and beats all bad templates, false otherwise
-     */
-    public static boolean findCompare(ImageTemplate good, CaptureSource source, ImageTemplate... bad) {
-        MatchResult result = compare(List.of(good), List.of(bad), source,
-                ClickConfig.DEFAULT_CONFIDENCE, ClickConfig.DEFAULT_COMPARE_MARGIN);
-        VisionContext.setLastMatch(result);
-        return result.isFound();
-    }
-
-    /**
      * Among the {@code good} templates, return the best-scoring match that still beats every
      * {@code bad} template at its location by the default margin.
      * <p>
@@ -536,7 +464,8 @@ public class ImageFinder {
 
             MatchResult best = MatchResult.notFound();
             for (ImageTemplate good : goods) {
-                RawMatch gm = OpencvManager.findBestMatch(good.getMat(), background, false, confidence);
+                RawMatch gm = OpencvManager.findBestMatch(good.getMat(), background, false, confidence,
+                        good.captureResolution());
                 if (gm == null) {
                     continue;
                 }
@@ -645,7 +574,8 @@ public class ImageFinder {
             background = OpencvManager.bufferedImageToMat(screenshot);
 
             List<RawMatch> matches =
-                    OpencvManager.findMultipleMatches(template.getMat(), background, false, confidence);
+                    OpencvManager.findMultipleMatches(template.getMat(), background, false, confidence,
+                            template.captureResolution());
 
             Point origin = source.origin();
             int offsetX = (int) origin.x;

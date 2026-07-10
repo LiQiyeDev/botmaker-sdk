@@ -72,7 +72,16 @@ public final class OpencvManager {
      * so templates keep matching across different screen resolutions / DPI.
      */
     public static RawMatch findBestMatch(Mat template, Mat background, boolean grayscale, double confidenceThreshold) {
-        double primary = ResolutionScaler.primaryScale(background.width(), background.height());
+        return findBestMatch(template, background, grayscale, confidenceThreshold, null);
+    }
+
+    /**
+     * As {@link #findBestMatch(Mat, Mat, boolean, double)} but scaling the template by the given
+     * per-template {@code authored} capture resolution when non-null (falling back to the project default).
+     */
+    public static RawMatch findBestMatch(Mat template, Mat background, boolean grayscale,
+                                         double confidenceThreshold, com.botmaker.sdk.api.Size authored) {
+        double primary = ResolutionScaler.primaryScale(background.width(), background.height(), authored);
 
         RawMatch best = matchScaled(template, background, grayscale, primary);
         if (best != null && best.score() >= confidenceThreshold) {
@@ -101,7 +110,16 @@ public final class OpencvManager {
      * pyramid) so the reported near-miss score reflects the resolution-corrected template.
      */
     public static RawMatch findBest(Mat template, Mat background, boolean grayscale) {
-        double primary = ResolutionScaler.primaryScale(background.width(), background.height());
+        return findBest(template, background, grayscale, null);
+    }
+
+    /**
+     * As {@link #findBest(Mat, Mat, boolean)} but scaling the template by the given per-template
+     * {@code authored} capture resolution when non-null (falling back to the project default).
+     */
+    public static RawMatch findBest(Mat template, Mat background, boolean grayscale,
+                                    com.botmaker.sdk.api.Size authored) {
+        double primary = ResolutionScaler.primaryScale(background.width(), background.height(), authored);
         return matchScaled(template, background, grayscale, primary);
     }
 
@@ -192,7 +210,21 @@ public final class OpencvManager {
     }
 
     public static List<RawMatch> findMultipleMatches(Mat template, Mat background, boolean grayscale, double confidenceThreshold) {
-        return findMultipleMatches(template, background, grayscale, confidenceThreshold, DEFAULT_OVERLAP_THRESHOLD);
+        return findMultipleMatches(template, background, grayscale, confidenceThreshold, DEFAULT_OVERLAP_THRESHOLD, null);
+    }
+
+    /**
+     * As {@link #findMultipleMatches(Mat, Mat, boolean, double)} but scaling the template by the given
+     * per-template {@code authored} capture resolution when non-null (falling back to the project default).
+     */
+    public static List<RawMatch> findMultipleMatches(Mat template, Mat background, boolean grayscale,
+                                                     double confidenceThreshold, com.botmaker.sdk.api.Size authored) {
+        return findMultipleMatches(template, background, grayscale, confidenceThreshold, DEFAULT_OVERLAP_THRESHOLD, authored);
+    }
+
+    public static List<RawMatch> findMultipleMatches(Mat template, Mat background, boolean grayscale,
+                                                     double confidenceThreshold, double overlapThreshold) {
+        return findMultipleMatches(template, background, grayscale, confidenceThreshold, overlapThreshold, null);
     }
 
     /**
@@ -200,15 +232,16 @@ public final class OpencvManager {
      * {@code confidenceThreshold}.
      */
     public static List<RawMatch> findMultipleMatches(Mat template, Mat background, boolean grayscale,
-                                                     double confidenceThreshold, double overlapThreshold) {
+                                                     double confidenceThreshold, double overlapThreshold,
+                                                     com.botmaker.sdk.api.Size authored) {
         if (template.empty() || background.empty()) {
             System.err.println("Error: Invalid input images for findMultipleMatches.");
             return new ArrayList<>();
         }
 
-        // Resolution-independent: match the template at the project's primary scale (single scale here
+        // Resolution-independent: match the template at its primary scale (single scale here
         // to keep non-maximal suppression across a single template footprint tractable).
-        double scale = ResolutionScaler.primaryScale(background.width(), background.height());
+        double scale = ResolutionScaler.primaryScale(background.width(), background.height(), authored);
         Mat localTemplate = resizeTemplate(template, scale);
         Mat localBackground = background.clone();
         if (localBackground.width() < localTemplate.width() || localBackground.height() < localTemplate.height()) {

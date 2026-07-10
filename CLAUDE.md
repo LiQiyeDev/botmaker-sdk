@@ -39,14 +39,18 @@ releases are cut from the umbrella with `../release.sh`.
 
 ### Local dev (test SDK changes without pushing a tag)
 
+> The old `dev-install.sh` scripts were removed — do the steps below by hand (or reinstate a small script if
+> you iterate on the SDK a lot). See the umbrella `../CLAUDE.md` › Local dev.
+
 A generated bot pins `com.github.LiQiyeDev:botmaker-sdk:<version>`, and the local `~/.m2` is checked before
 JitPack — but a plain `mvn install` here installs under `com.botmaker.sdk:botmaker-sdk`, the *wrong*
-coordinate, so a bot won't pick it up. Run **`./dev-install.sh`** instead (or the umbrella `../dev-install.sh`
-to do shared + sdk together): it reinstalls `botmaker-shared` at `0.0.0-SNAPSHOT`, then installs this build
-into `~/.m2` as `com.github.LiQiyeDev:botmaker-sdk:local-SNAPSHOT`. It also rewrites `botmaker.shared.version`
-→ `0.0.0-SNAPSHOT` in its temporary pom (restored on exit) so the local SDK build depends on that **local**
-shared build — without this, once a release pins the property to a real tag (e.g. `v0.0.2`) your local shared
-changes would be silently ignored.
+coordinate, so a bot won't pick it up. Instead: first install shared locally (`mvn -pl botmaker-shared -am
+install` from the umbrella root, landing it at `0.0.0-SNAPSHOT`), then install this build under the JitPack
+coordinate as a snapshot — set this module's coordinate/version to
+`com.github.LiQiyeDev:botmaker-sdk:local-SNAPSHOT` for the build and run
+`mvn install -Dbotmaker.shared.version=0.0.0-SNAPSHOT` so the local SDK build depends on that **local** shared
+build (without the override, once a release pins the property to a real tag your local shared changes are
+silently ignored).
 
 You no longer type the version into Studio: it auto-lists locally-installed `*-SNAPSHOT` SDK builds at the top
 of the SDK version dropdown (New Project and Project ▸ Manage Libraries), labeled `(local build)` and
@@ -65,8 +69,11 @@ static facades (`ImageFinder`, `ImageClicker`, `ScreenCapture`, …) are statele
 
 ### Public API vs internal plumbing
 
-- **`com.botmaker.sdk.api.*`** is the stable contract Studio compiles user bots against — **do not
-  change existing public method signatures.** It contains:
+- **`com.botmaker.sdk.api.*`** is the API generated bots compile against. **No published bot consumes it
+  yet, so it is currently freely breakable** — remove/rename/retype public methods when it makes the API
+  cleaner (e.g. the Compare API was trimmed to only `ImageTemplateGroup` overloads), without a compat shim;
+  the only cost is the ordered cross-module release (see the umbrella `../CLAUDE.md`). Reinstate
+  signature-stability discipline once real bots ship. It contains:
   - `api.vision` — `ImageFinder` (find + `exists` + the lambda control-flow `whileExists`/`ifExists`
     /`untilExists`), `ImageClicker`, `ImageWaiter`, `MatchResult`, `ImageTemplate`, `ClickConfig`.
   - `api.capture.Screen` (`capture()`), `api.interaction.Mouse`/`Wait`, `api.core.Direction`,

@@ -8,6 +8,27 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-10 — Compare API trim, click Any/All Compare, Game running-detection, per-template resolution
+
+**Done**
+- **Trimmed the Compare surface.** Removed every `clickCompare`/`findCompare` overload that took a solo
+  `ImageTemplate` (`ImageClicker`, `ImageFinder`); the `ImageTemplateGroup` overloads remain the single
+  Compare shape. This is an intentional breaking API change (no bot consumes the SDK yet).
+- **New `ImageClicker.clickAnyCompare` / `clickAllCompare`** over `ImageTemplateGroup` (with
+  `CaptureSource` + `margin` overloads). `clickAnyCompare` clicks the first good in group order that beats
+  the bad set; `clickAllCompare` clicks every winning location and returns the count. Backed by new private
+  `compareAnyInternal` / `compareAllInternal` (+ shared `beatsAll` neighbour-scoring helper).
+- **`Game` running-detection & wait** (window-title based, via `NativeControllerFactory.get()
+  .getAllWindows()`): `isRunning(title)`, `waitForLaunch(title, timeoutMs)` (~250ms poll),
+  `launchIfNotRunning(...)`, `launchSteamIfNotRunning(...)`, `launchAndWait(...)`. Avoids relaunching an
+  already-running game and lets a bot block until the game window appears. `launch`/`launchSteam` unchanged.
+- **Per-template capture resolution.** Resolution-independent matching now prefers each template's own
+  authored resolution over the project-wide `ProjectDefaults.defaultResolution()`. `ImageTemplate
+  .captureResolution()` lazily reads `captureWidth`/`captureHeight` from a `<name>.json` sidecar (written by
+  Studio; best-effort, null when absent). Threaded through `ResolutionScaler.primaryScale(live, authored)`
+  and new authored-aware overloads of `OpencvManager.findBest`/`findBestMatch`/`findMultipleMatches`;
+  templates without a sidecar keep the previous project-wide behaviour.
+
 ## 2026-07-10 — Verify `Game.launchSteam`
 
 **Done**
