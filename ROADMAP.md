@@ -8,6 +8,16 @@ to **Deferred / next** (intentionally left for later, with enough context to pic
 
 ---
 
+## 2026-07-10 — Verify `Game.launchSteam`
+
+**Done**
+- Reviewed `api/launch/Game.launchSteam(int)` → delegates to `launchSteam(String)`, which opens
+  `steam://rungameid/<id>` via `UriLauncher` (Desktop.browse → `xdg-open`/`open`/`rundll32` fallback) and
+  then falls back to the `steam -applaunch <id>` CLI. URI + fallback are correct; kept the numeric overload
+  as a documented convenience (no signature change).
+- Added `api/launch/GameTest` pinning the reject-empty-input contract for `launch` and `launchSteam`
+  (String + numeric overload) — deliberately does not perform a real launch (no process/Steam spawned in CI).
+
 ## 2026-07-09 — API cleanup: global Source, concrete capture sources, Mouse ergonomics, resolution-independent matching
 
 **Done**
