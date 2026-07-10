@@ -39,23 +39,30 @@ releases are cut from the umbrella with `../release.sh`.
 
 ### Local dev (test SDK changes without pushing a tag)
 
-> The old `dev-install.sh` scripts were removed — do the steps below by hand (or reinstate a small script if
-> you iterate on the SDK a lot). See the umbrella `../CLAUDE.md` › Local dev.
+> The old `dev-install.sh` script was removed and is **no longer needed**: this module's pom `groupId` is now
+> `com.github.LiQiyeDev` (matching the coordinate JitPack serves), so a plain `mvn install` already lands the
+> SDK at the coordinate a generated bot resolves. The whole `local-SNAPSHOT` / `-Dbotmaker.shared.version`
+> dance the old script automated is obsolete.
 
 A generated bot pins `com.github.LiQiyeDev:botmaker-sdk:<version>`, and the local `~/.m2` is checked before
-JitPack — but a plain `mvn install` here installs under `com.botmaker.sdk:botmaker-sdk`, the *wrong*
-coordinate, so a bot won't pick it up. Instead: first install shared locally (`mvn -pl botmaker-shared -am
-install` from the umbrella root, landing it at `0.0.0-SNAPSHOT`), then install this build under the JitPack
-coordinate as a snapshot — set this module's coordinate/version to
-`com.github.LiQiyeDev:botmaker-sdk:local-SNAPSHOT` for the build and run
-`mvn install -Dbotmaker.shared.version=0.0.0-SNAPSHOT` so the local SDK build depends on that **local** shared
-build (without the override, once a release pins the property to a real tag your local shared changes are
-silently ignored).
+JitPack. To make a bot pick up your local SDK changes, install both shared and the SDK to `~/.m2` at
+`0.0.0-SNAPSHOT` in one shot from the umbrella root:
 
-You no longer type the version into Studio: it auto-lists locally-installed `*-SNAPSHOT` SDK builds at the top
-of the SDK version dropdown (New Project and Project ▸ Manage Libraries), labeled `(local build)` and
-preselected. Your bot resolves the local build first; JitPack is the fallback. Users pick real released
-versions and never have `local-SNAPSHOT`, so they're unaffected.
+```bash
+mvn -pl botmaker-sdk -am install     # builds+installs shared (-am) then the SDK, both at 0.0.0-SNAPSHOT
+```
+
+`-am` ("also make") builds the SDK's reactor dependency `shared` first, so both land at `0.0.0-SNAPSHOT`
+(the version every consumer defaults to via `${botmaker.shared.version}`), and the installed SDK depends on
+that local shared. Re-run it after each SDK edit; a bot pinned to `0.0.0-SNAPSHOT` resolves the freshly
+installed jar on its next classpath resolve.
+
+You never type the version into Studio: it auto-lists locally-installed `*-SNAPSHOT` SDK builds (newest
+first) at the top of the SDK version dropdown (New Project and Project ▸ Manage Libraries), labeled
+`(local build)` and **preselected**, so a bot created in a dev-run Studio is pinned to `0.0.0-SNAPSHOT`
+automatically. This affordance is gated on `AppVersion.isDevBuild()` (true only when there's no jar
+manifest, i.e. an IDE/`javafx:run` launch), so packaged/released builds never surface your `~/.m2` snapshots
+and their users only ever pick real released versions.
 
 ## Code Style
 
