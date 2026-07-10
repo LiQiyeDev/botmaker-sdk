@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
  * search <em>region</em> is expressed as a {@link CaptureSource#region(com.botmaker.sdk.api.Rect) region of a
  * source}, not a separate parameter. The no-source overloads default to the whole desktop.
  *
- * <p>Besides {@code find}/{@code findAll}/{@code findAny} this class owns the boolean {@code exists} checks
- * and the lambda control-flow helpers ({@link #whileExists}, {@link #untilExists}, {@link #ifExists}) — each
- * is one capture that hands the matched {@link MatchResult} to your action.
+ * <p>Besides {@code find}/{@code findAll}/{@code findAny} this class owns the lambda control-flow helpers
+ * ({@link #whileFind}, {@link #untilFind}, {@link #ifFind}) — each is one capture that hands the matched
+ * {@link MatchResult} to your action.
  */
 public class ImageFinder {
 
@@ -760,183 +760,6 @@ public class ImageFinder {
         }
     }
 
-    // --- Existence checks (single template) ---
-
-    /**
-     * Checks if the template exists on the current capture source using the default confidence.
-     *
-     * @param template the image template to search for
-     * @return true if the template was found, false otherwise
-     */
-    public static boolean exists(ImageTemplate template) {
-        return find(template);
-    }
-
-    /**
-     * Checks if the template exists on the current capture source with a custom confidence threshold.
-     *
-     * @param template   the image template to search for
-     * @param confidence the minimum confidence score (0.0 to 1.0) required for a match
-     * @return true if the template was found, false otherwise
-     */
-    public static boolean exists(ImageTemplate template, double confidence) {
-        return find(template, confidence);
-    }
-
-    /**
-     * Checks if the template exists on a specific capture source using the default confidence.
-     *
-     * @param template the image template to search for
-     * @param source   the capture source to search within
-     * @return true if the template was found, false otherwise
-     */
-    public static boolean exists(ImageTemplate template, CaptureSource source) {
-        return find(template, source);
-    }
-
-    /**
-     * Checks if the template exists on a specific capture source with a custom confidence threshold.
-     *
-     * @param template   the image template to search for
-     * @param source     the capture source to search within
-     * @param confidence the minimum confidence score (0.0 to 1.0) required for a match
-     * @return true if the template was found, false otherwise
-     */
-    public static boolean exists(ImageTemplate template, CaptureSource source, double confidence) {
-        return find(template, source, confidence);
-    }
-
-    /**
-     * Checks if the template does NOT exist on the current capture source.
-     *
-     * @param template the image template to search for
-     * @return true if the template was NOT found, false otherwise
-     */
-    public static boolean notExists(ImageTemplate template) {
-        return !exists(template);
-    }
-
-    /**
-     * Checks if the template does NOT exist on a specific capture source.
-     *
-     * @param template the image template to search for
-     * @param source   the capture source to search within
-     * @return true if the template was NOT found, false otherwise
-     */
-    public static boolean notExists(ImageTemplate template, CaptureSource source) {
-        return !exists(template, source);
-    }
-
-    /**
-     * Checks if any of the templates exists on the current capture source.
-     *
-     * @param templates the image templates to search for
-     * @return true if any template was found, false otherwise
-     */
-    public static boolean existsAny(ImageTemplate... templates) {
-        return findAny(templates);
-    }
-
-    /**
-     * Checks if any of the templates exists on a specific capture source.
-     *
-     * @param source    the capture source to search within
-     * @param templates the image templates to search for
-     * @return true if any template was found, false otherwise
-     */
-    public static boolean existsAny(CaptureSource source, ImageTemplate... templates) {
-        return findAny(source, templates);
-    }
-
-    /** True only if <em>every</em> template is currently visible (empty input is false). */
-    public static boolean existsAll(ImageTemplate... templates) {
-        return existsAll(Source.current(), templates);
-    }
-
-    /**
-     * Checks if all templates exist on a specific capture source.
-     *
-     * @param source    the capture source to search within
-     * @param templates the image templates to search for
-     * @return true if all templates were found, false otherwise
-     */
-    public static boolean existsAll(CaptureSource source, ImageTemplate... templates) {
-        if (templates.length == 0) {
-            return false;
-        }
-        for (ImageTemplate template : templates) {
-            if (!exists(template, source)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // --- Group existence checks ---
-
-    /**
-     * Checks if any template in the group exists on the current capture source.
-     *
-     * @param group the template group to search for
-     * @return true if any template in the group was found, false otherwise
-     */
-    public static boolean exists(ImageTemplateGroup group) {
-        return findAny(group);
-    }
-
-    /**
-     * Checks if any template in the group exists on a specific capture source.
-     *
-     * @param group  the template group to search for
-     * @param source the capture source to search within
-     * @return true if any template in the group was found, false otherwise
-     */
-    public static boolean exists(ImageTemplateGroup group, CaptureSource source) {
-        return findAny(group, source);
-    }
-
-    /**
-     * Checks if every template in the group exists on the current capture source.
-     *
-     * @param group the template group to search for
-     * @return true if every template in the group was found, false otherwise
-     */
-    public static boolean existsAll(ImageTemplateGroup group) {
-        return existsAll(group.toArray());
-    }
-
-    /**
-     * Checks if every template in the group exists on a specific capture source.
-     *
-     * @param group  the template group to search for
-     * @param source the capture source to search within
-     * @return true if every template in the group was found, false otherwise
-     */
-    public static boolean existsAll(ImageTemplateGroup group, CaptureSource source) {
-        return existsAll(source, group.toArray());
-    }
-
-    /**
-     * Checks if no template in the group exists on the current capture source.
-     *
-     * @param group the template group to search for
-     * @return true if no template in the group was found, false otherwise
-     */
-    public static boolean notExists(ImageTemplateGroup group) {
-        return !exists(group);
-    }
-
-    /**
-     * Checks if no template in the group exists on a specific capture source.
-     *
-     * @param group  the template group to search for
-     * @param source the capture source to search within
-     * @return true if no template in the group was found, false otherwise
-     */
-    public static boolean notExists(ImageTemplateGroup group, CaptureSource source) {
-        return !exists(group, source);
-    }
-
     // --- Lambda control-flow: act on the live match, one capture per check ---
 
     /**
@@ -947,8 +770,8 @@ public class ImageFinder {
      * @param action   the action to run with the match result
      * @return true if the template was found and the action was run, false otherwise
      */
-    public static boolean ifExists(ImageTemplate template, Consumer<MatchResult> action) {
-        return ifExists(template, Source.current(), action);
+    public static boolean ifFind(ImageTemplate template, Consumer<MatchResult> action) {
+        return ifFind(template, Source.current(), action);
     }
 
     /**
@@ -960,7 +783,7 @@ public class ImageFinder {
      * @param action   the action to run with the match result
      * @return true if the template was found and the action was run, false otherwise
      */
-    public static boolean ifExists(ImageTemplate template, CaptureSource source, Consumer<MatchResult> action) {
+    public static boolean ifFind(ImageTemplate template, CaptureSource source, Consumer<MatchResult> action) {
         MatchResult result = findInternal(template, source, ClickConfig.DEFAULT_CONFIDENCE);
         VisionContext.setLastMatch(result);
         if (result.isFound()) {
@@ -976,8 +799,8 @@ public class ImageFinder {
      * @param template the image template to search for
      * @param action   the action to run with each match result
      */
-    public static void whileExists(ImageTemplate template, Consumer<MatchResult> action) {
-        whileExists(template, Source.current(), action);
+    public static void whileFind(ImageTemplate template, Consumer<MatchResult> action) {
+        whileFind(template, Source.current(), action);
     }
 
     /**
@@ -987,7 +810,7 @@ public class ImageFinder {
      * @param source   the capture source to search within
      * @param action   the action to run with each match result
      */
-    public static void whileExists(ImageTemplate template, CaptureSource source, Consumer<MatchResult> action) {
+    public static void whileFind(ImageTemplate template, CaptureSource source, Consumer<MatchResult> action) {
         MatchResult result;
         while ((result = findInternal(template, source, ClickConfig.DEFAULT_CONFIDENCE)).isFound()) {
             VisionContext.setLastMatch(result);
@@ -997,13 +820,13 @@ public class ImageFinder {
     }
 
     /**
-     * Keep running {@code action} until {@code template} appears (no match exists while it's absent).
+     * Keep running {@code action} until {@code template} appears (no match found while it's absent).
      *
      * @param template the image template to search for
      * @param action   the action to run
      */
-    public static void untilExists(ImageTemplate template, Runnable action) {
-        untilExists(template, Source.current(), action);
+    public static void untilFind(ImageTemplate template, Runnable action) {
+        untilFind(template, Source.current(), action);
     }
 
     /**
@@ -1013,8 +836,8 @@ public class ImageFinder {
      * @param source   the capture source to search within
      * @param action   the action to run
      */
-    public static void untilExists(ImageTemplate template, CaptureSource source, Runnable action) {
-        while (!exists(template, source)) {
+    public static void untilFind(ImageTemplate template, CaptureSource source, Runnable action) {
+        while (!find(template, source)) {
             action.run();
         }
     }
@@ -1023,7 +846,7 @@ public class ImageFinder {
     //
     // The "Any" variants hand your action the live match (the first template, in order, that clears the
     // threshold). The "All" variants take a Runnable — "every template is present" has no single
-    // meaningful MatchResult, so there is nothing to hand you (mirrors untilExists' Runnable).
+    // meaningful MatchResult, so there is nothing to hand you (mirrors untilFind' Runnable).
 
     /**
      * Run {@code action} once with the match if any template in the group is currently visible.
@@ -1033,8 +856,8 @@ public class ImageFinder {
      * @param action the action to run with the match result
      * @return true if any template was found and the action was run, false otherwise
      */
-    public static boolean ifExistsAny(ImageTemplateGroup group, Consumer<MatchResult> action) {
-        return ifExistsAny(group, Source.current(), action);
+    public static boolean ifFindAny(ImageTemplateGroup group, Consumer<MatchResult> action) {
+        return ifFindAny(group, Source.current(), action);
     }
 
     /**
@@ -1046,7 +869,7 @@ public class ImageFinder {
      * @param action the action to run with the match result
      * @return true if any template was found and the action was run, false otherwise
      */
-    public static boolean ifExistsAny(ImageTemplateGroup group, CaptureSource source, Consumer<MatchResult> action) {
+    public static boolean ifFindAny(ImageTemplateGroup group, CaptureSource source, Consumer<MatchResult> action) {
         MatchResult result = findAnyInternal(source, ClickConfig.DEFAULT_CONFIDENCE, group.toArray());
         VisionContext.setLastMatch(result);
         if (result.isFound()) {
@@ -1063,8 +886,8 @@ public class ImageFinder {
      * @param action the action to run
      * @return true if all templates were found and the action was run, false otherwise
      */
-    public static boolean ifExistsAll(ImageTemplateGroup group, Runnable action) {
-        return ifExistsAll(group, Source.current(), action);
+    public static boolean ifFindAll(ImageTemplateGroup group, Runnable action) {
+        return ifFindAll(group, Source.current(), action);
     }
 
     /**
@@ -1075,8 +898,8 @@ public class ImageFinder {
      * @param action the action to run
      * @return true if all templates were found and the action was run, false otherwise
      */
-    public static boolean ifExistsAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
-        if (existsAll(group, source)) {
+    public static boolean ifFindAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
+        if (group.templates().stream().allMatch(t -> find(t, source))) {
             action.run();
             return true;
         }
@@ -1089,8 +912,8 @@ public class ImageFinder {
      * @param group  the template group to search for
      * @param action the action to run with each match result
      */
-    public static void whileExistsAny(ImageTemplateGroup group, Consumer<MatchResult> action) {
-        whileExistsAny(group, Source.current(), action);
+    public static void whileFindAny(ImageTemplateGroup group, Consumer<MatchResult> action) {
+        whileFindAny(group, Source.current(), action);
     }
 
     /**
@@ -1100,7 +923,7 @@ public class ImageFinder {
      * @param source the capture source to search within
      * @param action the action to run with each match result
      */
-    public static void whileExistsAny(ImageTemplateGroup group, CaptureSource source, Consumer<MatchResult> action) {
+    public static void whileFindAny(ImageTemplateGroup group, CaptureSource source, Consumer<MatchResult> action) {
         MatchResult result;
         while ((result = findAnyInternal(source, ClickConfig.DEFAULT_CONFIDENCE, group.toArray())).isFound()) {
             VisionContext.setLastMatch(result);
@@ -1115,8 +938,8 @@ public class ImageFinder {
      * @param group  the template group to search for
      * @param action the action to run
      */
-    public static void whileExistsAll(ImageTemplateGroup group, Runnable action) {
-        whileExistsAll(group, Source.current(), action);
+    public static void whileFindAll(ImageTemplateGroup group, Runnable action) {
+        whileFindAll(group, Source.current(), action);
     }
 
     /**
@@ -1126,8 +949,8 @@ public class ImageFinder {
      * @param source the capture source to search within
      * @param action the action to run
      */
-    public static void whileExistsAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
-        while (existsAll(group, source)) {
+    public static void whileFindAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
+        while (group.templates().stream().allMatch(t -> find(t, source))) {
             action.run();
         }
     }
@@ -1138,8 +961,8 @@ public class ImageFinder {
      * @param group  the template group to search for
      * @param action the action to run
      */
-    public static void untilExistsAny(ImageTemplateGroup group, Runnable action) {
-        untilExistsAny(group, Source.current(), action);
+    public static void untilFindAny(ImageTemplateGroup group, Runnable action) {
+        untilFindAny(group, Source.current(), action);
     }
 
     /**
@@ -1149,8 +972,8 @@ public class ImageFinder {
      * @param source the capture source to search within
      * @param action the action to run
      */
-    public static void untilExistsAny(ImageTemplateGroup group, CaptureSource source, Runnable action) {
-        while (!exists(group, source)) {
+    public static void untilFindAny(ImageTemplateGroup group, CaptureSource source, Runnable action) {
+        while (!findAny(group, source)) {
             action.run();
         }
     }
@@ -1161,8 +984,8 @@ public class ImageFinder {
      * @param group  the template group to search for
      * @param action the action to run
      */
-    public static void untilExistsAll(ImageTemplateGroup group, Runnable action) {
-        untilExistsAll(group, Source.current(), action);
+    public static void untilFindAll(ImageTemplateGroup group, Runnable action) {
+        untilFindAll(group, Source.current(), action);
     }
 
     /**
@@ -1172,8 +995,8 @@ public class ImageFinder {
      * @param source the capture source to search within
      * @param action the action to run
      */
-    public static void untilExistsAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
-        while (!existsAll(group, source)) {
+    public static void untilFindAll(ImageTemplateGroup group, CaptureSource source, Runnable action) {
+        while (!group.templates().stream().allMatch(t -> find(t, source))) {
             action.run();
         }
     }
